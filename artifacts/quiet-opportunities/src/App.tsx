@@ -1,19 +1,29 @@
-import { type ReactNode, useEffect, useMemo, useState } from 'react';
+import { type CSSProperties, type ReactNode, useEffect, useMemo, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
-import { ArrowDown, ArrowUpRight, Check, Moon, Sun } from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight, Check, Moon, Sun, X } from 'lucide-react';
 import listings from './listings.json';
-import {
-  Route,
-  Switch,
-  useLocation,
-  Router as WouterRouter,
-} from 'wouter';
+import { Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
 
 const queryClient = new QueryClient();
+type Listing = (typeof listings)[number];
+
+const types = ['All', 'Submission', 'Grant', 'Residency', 'Fellowship', 'Contest'];
+const disciplines = ['All', 'Poetry', 'Fiction', 'Nonfiction', 'Photography', 'Visual art'];
+const classNameFor = (value: string) => value.toLowerCase().replaceAll(' ', '-');
+const disciplineAccents: Record<string, string> = {
+  Poetry: 'var(--plum)',
+  Fiction: 'var(--coral)',
+  Nonfiction: 'var(--sun)',
+  Photography: 'var(--sky)',
+  'Visual art': 'var(--mint)',
+};
+const edgeStyleFor = (item: Listing) => ({
+  '--edge-colors': item.discipline.map((discipline) => disciplineAccents[discipline]).join(', '),
+}) as CSSProperties;
 
 function Home() {
   const [activeType, setActiveType] = useState('All');
@@ -31,185 +41,237 @@ function Home() {
     try {
       localStorage.setItem('quiet-opportunities-theme', darkMode ? 'dark' : 'light');
     } catch {
-      // The theme still works for this visit when storage is unavailable.
+      // Keep the selected theme for this visit if storage is unavailable.
     }
   }, [darkMode]);
 
-  const types = ['All', 'Submission', 'Grant', 'Residency', 'Fellowship', 'Contest'];
-  const disciplines = ['All', 'Fiction', 'Poetry', 'Nonfiction', 'Photography', 'Visual art'];
-  const referenceDate = new Date('2026-10-13T00:00:00Z');
+  const today = new Date();
+  const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+  const latestVerified = useMemo(
+    () => listings.reduce((latest, item) => item.verified > latest ? item.verified : latest, ''),
+    [],
+  );
+  const featureListings = useMemo(() => listings
+    .filter((item) => item.deadline !== 'rolling' && item.deadline >= todayKey)
+    .sort((a, b) => a.deadline.localeCompare(b.deadline))
+    .slice(0, 3), [todayKey]);
   const visibleListings = useMemo(() => listings
-    .filter((item) => item.deadline === 'rolling' || new Date(`${item.deadline}T00:00:00Z`) >= referenceDate)
+    .filter((item) => item.deadline === 'rolling' || item.deadline >= todayKey)
     .filter((item) => activeType === 'All' || item.type.toLowerCase() === activeType.toLowerCase())
     .filter((item) => activeDiscipline === 'All' || item.discipline.includes(activeDiscipline))
     .sort((a, b) => {
       if (a.deadline === 'rolling') return b.deadline === 'rolling' ? 0 : 1;
       if (b.deadline === 'rolling') return -1;
       return a.deadline.localeCompare(b.deadline);
-    }), [activeType, activeDiscipline]);
+    }), [activeType, activeDiscipline, todayKey]);
 
-  const daysUntil = (deadline: string) => Math.ceil(
-    (new Date(`${deadline}T00:00:00Z`).getTime() - referenceDate.getTime()) / 86400000,
-  );
+  const daysUntil = (deadline: string) => {
+    const [year, month, day] = deadline.split('-').map(Number);
+    const due = new Date(year, month - 1, day);
+    const current = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    return Math.round((due.getTime() - current.getTime()) / 86400000);
+  };
   const formatDate = (date: string) => new Date(`${date}T00:00:00Z`).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-    timeZone: 'UTC',
+    month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC',
   });
+  const clearFilters = () => {
+    setActiveType('All');
+    setActiveDiscipline('All');
+  };
 
   return (
     <main className="quiet-page">
       <div className="page-shell">
         <header className="masthead">
           <a className="wordmark" href="/" aria-label="Quiet Opportunities home">
-            <span className="wordmark-mark" aria-hidden="true">q.</span>
+            <span className="wordmark-mark" aria-hidden="true">q<span>.</span></span>
             <span>Quiet Opportunities</span>
           </a>
-          <button
-            className="theme-toggle"
-            type="button"
-            onClick={() => setDarkMode((current) => !current)}
-            aria-label={`Switch to ${darkMode ? 'light' : 'dark'} mode`}
-            aria-pressed={darkMode}
-            data-testid="button-theme-toggle"
-          >
-            {darkMode ? <Sun size={17} strokeWidth={1.7} /> : <Moon size={17} strokeWidth={1.7} />}
-            <span>{darkMode ? 'Light' : 'Dark'} mode</span>
-          </button>
+          <p className="header-promise">Good things for people who make things.</p>
+          <div className="header-actions">
+            <span className="last-updated">Last updated <strong>{formatDate(latestVerified)}</strong></span>
+            <button
+              className="theme-toggle"
+              type="button"
+              onClick={() => setDarkMode((current) => !current)}
+              aria-label={`Switch to ${darkMode ? 'light' : 'dark'} mode`}
+              aria-pressed={darkMode}
+              data-testid="button-theme-toggle"
+            >
+              {darkMode ? <Sun size={18} /> : <Moon size={18} />}
+              <span>{darkMode ? 'Light' : 'Dark'}</span>
+            </button>
+          </div>
         </header>
 
-        <section className="intro" aria-labelledby="page-title">
-          <div className="intro-copy">
-            <p className="eyebrow"><span className="eyebrow-line" /> A considered directory for creative work</p>
-            <h1 id="page-title">Room to make<br /><em>something meaningful.</em></h1>
-            <p className="promise">A calm, carefully kept list of opportunities for writers and photographers finding their way.</p>
+        <section className="feature-section" aria-labelledby="feature-title">
+          <div className="section-heading feature-heading">
+            <div>
+              <p className="eyebrow"><span className="paint-dot" /> THREE DATES TO KEEP CLOSE</p>
+              <h1 id="feature-title">Closing soon</h1>
+            </div>
+            <span className="heading-doodle" aria-hidden="true">〰</span>
           </div>
-          <div className="intro-aside">
-            <span className="issue-label">THE OPEN CALLS EDITION</span>
-            <span className="intro-issue">No. 01 <span>/</span> Autumn 2026</span>
-            <span className="aside-rule" />
-            <p>Good work takes time.<br />Finding the right door shouldn’t.</p>
-          </div>
-          <div className="intro-index" aria-hidden="true">01 — 06</div>
+          {featureListings.length ? (
+            <div className="feature-grid">
+              {featureListings.map((item, index) => (
+                <FeatureCard key={item.name} item={item} index={index} days={daysUntil(item.deadline)} formatDate={formatDate} />
+              ))}
+            </div>
+          ) : (
+            <div className="feature-empty">No dated calls on the horizon right now. The rolling ones are still open below.</div>
+          )}
         </section>
 
         <section className="directory" aria-labelledby="directory-title">
           <div className="directory-heading">
             <div>
-              <p className="eyebrow section-eyebrow">THE DIRECTORY <span>·</span> UPDATED WEEKLY</p>
-              <h2 id="directory-title">Open calls &amp; fellowships</h2>
+              <p className="eyebrow"><span className="paint-dot paint-dot-orange" /> FIND YOUR KIND OF OPENING</p>
+              <h2 id="directory-title">The opportunity shelf</h2>
             </div>
-            <p className="sort-note"><ArrowDown size={14} strokeWidth={1.6} /> Soonest deadline</p>
+            <span className="sort-note"><ArrowDownRight size={18} /> Soonest first</span>
           </div>
 
           <div className="filters" aria-label="Filter opportunities">
-            <div className="filter-group">
-              <span className="filter-label">OPPORTUNITY</span>
-              <div className="chip-row" role="group" aria-label="Filter by opportunity type">
-                {types.map((type) => (
-                  <button
-                    key={type}
-                    className={`filter-chip ${activeType === type ? 'is-active' : ''}`}
-                    type="button"
-                    onClick={() => setActiveType(type)}
-                    aria-pressed={activeType === type}
-                    data-testid={`filter-type-${type.toLowerCase()}`}
-                  >{type}</button>
-                ))}
-              </div>
-            </div>
-            <div className="filter-group discipline-filter">
-              <span className="filter-label">DISCIPLINE</span>
-              <div className="chip-row" role="group" aria-label="Filter by discipline">
-                {disciplines.map((discipline) => (
-                  <button
-                    key={discipline}
-                    className={`filter-chip ${activeDiscipline === discipline ? 'is-active' : ''}`}
-                    type="button"
-                    onClick={() => setActiveDiscipline(discipline)}
-                    aria-pressed={activeDiscipline === discipline}
-                    data-testid={`filter-discipline-${discipline.toLowerCase().replaceAll(' ', '-')}`}
-                  >{discipline}</button>
-                ))}
-              </div>
-            </div>
+            <FilterGroup label="TYPE" title="Filter by opportunity type" values={types} selected={activeType} onSelect={setActiveType} testPrefix="type" />
+            <FilterGroup label="DISCIPLINE" title="Filter by discipline" values={disciplines} selected={activeDiscipline} onSelect={setActiveDiscipline} testPrefix="discipline" />
+            <button className="clear-button" type="button" onClick={clearFilters} disabled={activeType === 'All' && activeDiscipline === 'All'} data-testid="button-clear-filters">
+              <X size={14} /> Clear all
+            </button>
           </div>
 
-          <div className="listing-meta" aria-live="polite">
-            <span>{String(visibleListings.length).padStart(2, '0')} opportunities</span>
-            <span className="meta-divider" />
-            <span>Dates checked for autumn 2026</span>
+          <div className="results-bar" aria-live="polite">
+            <p><strong>{visibleListings.length}</strong> {visibleListings.length === 1 ? 'opportunity' : 'opportunities'} to explore</p>
+            {(activeType !== 'All' || activeDiscipline !== 'All') && (
+              <span className="active-filter-note">{[activeType !== 'All' && activeType, activeDiscipline !== 'All' && activeDiscipline].filter(Boolean).join(' · ')}</span>
+            )}
           </div>
 
           {visibleListings.length > 0 ? (
             <div className="listing-list">
-              {visibleListings.map((item, index) => {
-                const isRolling = item.deadline === 'rolling';
-                const closingSoon = !isRolling && daysUntil(item.deadline) <= 14;
-                return (
-                  <article className="listing-card" key={item.name} data-testid={`card-opportunity-${index + 1}`}>
-                    <div className="listing-main">
-                      <div className="listing-kicker">
-                        <span>{item.type}</span>
-                        <span className="kicker-dot" />
-                        <span>{item.discipline.join(' / ')}</span>
-                      </div>
-                      <h3>{item.name}</h3>
-                      <p className="listing-note">{item.note}</p>
-                      <dl className="listing-details">
-                        <div><dt>Award</dt><dd>{item.award}</dd></div>
-                        <div><dt>Eligibility</dt><dd>{item.eligibility}</dd></div>
-                      </dl>
-                    </div>
-                    <aside className="listing-aside">
-                      <div className="deadline-block">
-                        <span className="detail-label">DEADLINE</span>
-                        <strong className="deadline-date">{isRolling ? 'Rolling' : formatDate(item.deadline)}</strong>
-                        {closingSoon && <span className="closing-badge">Closing soon</span>}
-                      </div>
-                      <div className="fee-block">
-                        <span className="detail-label">APPLICATION FEE</span>
-                        <span className="fee-value">{item.fee === 0 ? 'No fee' : `$${item.fee}`}</span>
-                      </div>
-                      <span className="verified"><Check size={13} strokeWidth={2} /> Verified {formatDate(item.verified)}</span>
-                      <a
-                        className="official-link"
-                        href={item.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        data-testid={`link-official-${index + 1}`}
-                      >Official page <ArrowUpRight size={15} strokeWidth={1.7} /></a>
-                    </aside>
-                  </article>
-                );
-              })}
+              {visibleListings.map((item, index) => (
+                <ListingCard key={item.name} item={item} index={index} days={item.deadline === 'rolling' ? null : daysUntil(item.deadline)} formatDate={formatDate} />
+              ))}
             </div>
           ) : (
             <div className="empty-state" data-testid="status-no-results">
-              <span className="empty-mark" aria-hidden="true">—</span>
-              <h3>Nothing on this page just yet.</h3>
-              <p>Try another discipline or opportunity type. The right fit may be just around the corner.</p>
-              <button type="button" className="reset-filters" onClick={() => {
-                setActiveType('All');
-                setActiveDiscipline('All');
-              }}>Clear filters</button>
+              <span className="empty-mark" aria-hidden="true">✳</span>
+              <h3>No matches in this little corner.</h3>
+              <p>Try another type or discipline to see what’s open.</p>
+              <button type="button" className="reset-filters" onClick={clearFilters}>Show everything</button>
             </div>
           )}
         </section>
 
         <footer className="site-footer">
-          <p>Always check the official page before submitting.<br />Real opportunities never ask you to pay to be considered.</p>
+          <span className="footer-squiggle" aria-hidden="true">〰</span>
+          <p>Always check the official page before submitting. Real opportunities never ask you to pay to be considered.</p>
+          <span className="footer-squiggle" aria-hidden="true">〰</span>
         </footer>
       </div>
     </main>
   );
 }
 
+function FilterGroup({ label, title, values, selected, onSelect, testPrefix }: {
+  label: string;
+  title: string;
+  values: string[];
+  selected: string;
+  onSelect: (value: string) => void;
+  testPrefix: string;
+}) {
+  return (
+    <div className={`filter-group filter-${testPrefix}`}>
+      <span className="filter-label">{label}</span>
+      <div className="chip-row" role="group" aria-label={title}>
+        {values.map((value) => (
+          <button
+            key={value}
+            className={`filter-chip ${value === 'All' ? 'chip-all' : `discipline-${classNameFor(value)}`} ${selected === value ? 'is-active' : ''}`}
+            type="button"
+            onClick={() => onSelect(value)}
+            aria-pressed={selected === value}
+            data-testid={`filter-${testPrefix}-${classNameFor(value)}`}
+          >{value}</button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function FeatureCard({ item, index, days, formatDate }: { item: Listing; index: number; days: number; formatDate: (date: string) => string }) {
+  const isClosing = days <= 14;
+  const accent = classNameFor(item.discipline[0] ?? 'fiction');
+  return (
+    <article className={`feature-card discipline-edge-${accent} feature-card-${index + 1}`} style={edgeStyleFor(item)} data-testid={`feature-opportunity-${index + 1}`}>
+      <div className="feature-topline">
+        <div className="feature-disciplines">
+          {item.discipline.map((discipline) => (
+            <span key={discipline} className={`discipline-badge discipline-${classNameFor(discipline)}`}>{discipline}</span>
+          ))}
+        </div>
+        <div className="feature-stickers">
+          {item.fee === 0 && <span className="sticker sticker-free">No fee</span>}
+          {isClosing
+            ? <span className="sticker sticker-closing">Closing<br />soon!</span>
+            : <span className="up-next">UP NEXT <span aria-hidden="true">↗</span></span>}
+        </div>
+      </div>
+      <span className="feature-type">{item.type}</span>
+      <h3>{item.name}</h3>
+      <div className="feature-facts">
+        <div><span>Deadline</span><strong>{formatDate(item.deadline)}</strong></div>
+        <div><span>Award</span><strong>{item.award}</strong></div>
+      </div>
+      <div className="feature-foot">
+        <span className="verified"><Check size={14} /> Verified {formatDate(item.verified)}</span>
+        <a href={item.link} target="_blank" rel="noopener noreferrer" className="official-link" data-testid={`link-feature-official-${index + 1}`}>
+          Go to official page <ArrowUpRight size={16} />
+        </a>
+      </div>
+    </article>
+  );
+}
+
+function ListingCard({ item, index, days, formatDate }: { item: Listing; index: number; days: number | null; formatDate: (date: string) => string }) {
+  const accent = classNameFor(item.discipline[0] ?? 'fiction');
+  return (
+    <article className={`listing-card discipline-edge-${accent}`} style={edgeStyleFor(item)} data-testid={`card-opportunity-${index + 1}`}>
+      <div className="listing-primary">
+        <div className="listing-tags">
+          {item.discipline.map((discipline) => (
+            <span key={discipline} className={`discipline-badge discipline-${classNameFor(discipline)}`}>{discipline}</span>
+          ))}
+          <span className="type-tag">{item.type}</span>
+          {item.fee === 0 && <span className="sticker sticker-free listing-free-sticker">No fee</span>}
+        </div>
+        <h3>{item.name}</h3>
+      </div>
+      <div className="listing-glance">
+        <div className="glance-item"><span>Deadline</span><strong>{item.deadline === 'rolling' ? 'Rolling' : formatDate(item.deadline)}</strong>
+          {days !== null && days <= 14 && <span className="mini-closing">Closing soon</span>}
+        </div>
+        <div className="glance-item"><span>Award</span><strong>{item.award}</strong></div>
+        <span className="verified"><Check size={14} /> Verified {formatDate(item.verified)}</span>
+        <a className="official-link" href={item.link} target="_blank" rel="noopener noreferrer" data-testid={`link-official-${index + 1}`}>
+          Go to official page <ArrowUpRight size={16} />
+        </a>
+      </div>
+      <details className="listing-more">
+        <summary>More details <span aria-hidden="true">＋</span></summary>
+        <div className="expanded-details">
+          <div><span>Who can apply</span><p>{item.eligibility}</p></div>
+          <div><span>Application fee</span><p>{item.fee === 0 ? 'No fee' : `$${item.fee}`}</p></div>
+          <div><span>About this call</span><p>{item.note}</p></div>
+        </div>
+      </details>
+    </article>
+  );
+}
+
 function Router() {
   return (
-    // Keep a shared shell (sidebar, navbar) outside the boundary so it
-    // survives a page crash.
     <RoutedErrorBoundary>
       <Switch>
         <Route path="/" component={Home} />
