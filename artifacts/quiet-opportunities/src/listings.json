@@ -1,0 +1,74 @@
+[
+  {
+    "name": "EXAMPLE — The Lantern Review Open Call",
+    "type": "submission",
+    "discipline": ["Fiction", "Poetry"],
+    "deadline": "2026-10-20",
+    "fee": 0,
+    "award": "Publication and a $250 contributor honorarium",
+    "eligibility": "Emerging writers worldwide; unpublished work only.",
+    "link": "https://example.com",
+    "verified": "2026-10-08",
+    "note": "A thoughtful home for work that finds meaning in the everyday."
+  },
+  {
+    "name": "EXAMPLE — Field Notes Emerging Photographer Grant",
+    "type": "grant",
+    "discipline": ["Photography"],
+    "deadline": "2026-10-26",
+    "fee": 0,
+    "award": "$1,800 project grant",
+    "eligibility": "Photographers in the first five years of their practice.",
+    "link": "https://example.com",
+    "verified": "2026-10-09",
+    "note": "Supports a new documentary series rooted in a local community."
+  },
+  {
+    "name": "EXAMPLE — Alder House Winter Residency",
+    "type": "residency",
+    "discipline": ["Fiction", "Nonfiction", "Poetry"],
+    "deadline": "2026-11-12",
+    "fee": 15,
+    "award": "Two weeks of studio space and a private room",
+    "eligibility": "Writers based in North America; travel not included.",
+    "link": "https://example.com",
+    "verified": "2026-10-10",
+    "note": "A quiet, self-directed stay in a small coastal community."
+  },
+  {
+    "name": "EXAMPLE — Open Frame Photo Fellowship",
+    "type": "fellowship",
+    "discipline": ["Photography", "Visual art"],
+    "deadline": "2026-12-04",
+    "fee": 0,
+    "award": "$3,000 stipend and a mentor for six months",
+    "eligibility": "Early-career image-makers working on a long-term project.",
+    "link": "https://example.com",
+    "verified": "2026-10-11",
+    "note": "Invites patient projects made with care and curiosity."
+  },
+  {
+    "name": "EXAMPLE — Small Hours Essay Prize",
+    "type": "contest",
+    "discipline": ["Nonfiction"],
+    "deadline": "2027-01-18",
+    "fee": 8,
+    "award": "$700 prize and publication",
+    "eligibility": "Writers over 18; essays must be 3,000 words or fewer.",
+    "link": "https://example.com",
+    "verified": "2026-10-12",
+    "note": "For clear-eyed personal essays on belonging and change."
+  },
+  {
+    "name": "EXAMPLE — Common Ground Editorial Fellowship",
+    "type": "fellowship",
+    "discipline": ["Fiction", "Poetry", "Nonfiction"],
+    "deadline": "rolling",
+    "fee": 0,
+    "award": "Paid editorial mentorship and publication",
+    "eligibility": "Open to writers without a traditional publishing contract.",
+    "link": "https://example.com",
+    "verified": "2026-10-12",
+    "note": "Applications are read in the order they arrive throughout the year."
+  }
+]

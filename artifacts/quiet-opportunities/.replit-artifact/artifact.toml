@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Quiet Opportunities"
+description = "A calm, ad-free directory of opportunities for emerging writers and photographers, with transparent deadline, fee, award, eligibility, and official link details."
+version = "1.0.0"
+id = "artifacts/quiet-opportunities"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23020
+
+[services.development]
+run = "pnpm --filter @workspace/quiet-opportunities run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/quiet-opportunities", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/quiet-opportunities/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23020"
+BASE_PATH = "/"
