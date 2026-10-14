@@ -129,22 +129,26 @@ function Home() {
               <p className="eyebrow"><span className="paint-dot paint-dot-orange" /> FIND YOUR KIND OF OPENING</p>
               <h2 id="directory-title">The opportunity shelf</h2>
             </div>
-            <span className="sort-note"><ArrowDownRight size={18} /> Soonest first</span>
           </div>
 
           <div className="filters" aria-label="Filter opportunities">
             <FilterGroup label="TYPE" title="Filter by opportunity type" values={types} selected={activeType} onSelect={setActiveType} testPrefix="type" />
             <FilterGroup label="DISCIPLINE" title="Filter by discipline" values={disciplines} selected={activeDiscipline} onSelect={setActiveDiscipline} testPrefix="discipline" />
+          </div>
+
+          <div className="results-toolbar" aria-live="polite">
+            <div className="results-bar">
+              <p><strong>{visibleListings.length}</strong> {visibleListings.length === 1 ? 'opportunity' : 'opportunities'} to explore</p>
+              {(activeType !== 'All' || activeDiscipline !== 'All') && (
+                <span className="active-filter-note">{[activeType !== 'All' && activeType, activeDiscipline !== 'All' && activeDiscipline].filter(Boolean).join(' · ')}</span>
+              )}
+            </div>
+            <div className="results-actions">
             <button className="clear-button" type="button" onClick={clearFilters} disabled={activeType === 'All' && activeDiscipline === 'All'} data-testid="button-clear-filters">
               <X size={14} /> Clear all
             </button>
-          </div>
-
-          <div className="results-bar" aria-live="polite">
-            <p><strong>{visibleListings.length}</strong> {visibleListings.length === 1 ? 'opportunity' : 'opportunities'} to explore</p>
-            {(activeType !== 'All' || activeDiscipline !== 'All') && (
-              <span className="active-filter-note">{[activeType !== 'All' && activeType, activeDiscipline !== 'All' && activeDiscipline].filter(Boolean).join(' · ')}</span>
-            )}
+              <span className="sort-note"><ArrowDownRight size={16} /> Soonest first</span>
+            </div>
           </div>
 
           {visibleListings.length > 0 ? (
