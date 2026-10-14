@@ -201,24 +201,23 @@ function FilterGroup({ label, title, values, selected, onSelect, testPrefix }: {
 }
 
 function FeatureCard({ item, index, days, formatDate }: { item: Listing; index: number; days: number; formatDate: (date: string) => string }) {
-  const isClosing = days <= 14;
   const accent = classNameFor(item.discipline[0] ?? 'fiction');
   return (
     <article className={`feature-card discipline-edge-${accent} feature-card-${index + 1}`} style={edgeStyleFor(item)} data-testid={`feature-opportunity-${index + 1}`}>
       <div className="feature-topline">
-        <div className="feature-disciplines">
-          {item.discipline.map((discipline) => (
-            <span key={discipline} className={`discipline-badge discipline-${classNameFor(discipline)}`}>{discipline}</span>
-          ))}
+        <div className="feature-heading-tags">
+          <div className="feature-disciplines">
+            {item.discipline.map((discipline) => (
+              <span key={discipline} className={`discipline-badge discipline-${classNameFor(discipline)}`}>{discipline}</span>
+            ))}
+          </div>
+          <span className="feature-type">{item.type}</span>
         </div>
         <div className="feature-stickers">
           {item.fee === 0 && <span className="sticker sticker-free">No fee</span>}
-          {isClosing
-            ? <span className="sticker sticker-closing">Closing<br />soon!</span>
-            : <span className="up-next">UP NEXT <span aria-hidden="true">↗</span></span>}
+          <span className="sticker sticker-days-left">{days === 1 ? '1 day left' : `${days} days left`}</span>
         </div>
       </div>
-      <span className="feature-type">{item.type}</span>
       <h3>{item.name}</h3>
       <div className="feature-facts">
         <div><span>Deadline</span><strong>{formatDate(item.deadline)}</strong></div>
