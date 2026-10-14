@@ -1,0 +1,15 @@
+Make these changes together. Keep the current colors, discipline accents, rounded shapes, squiggle underline, and playful feel.
+
+1. In the main list cards, replace the tilted orange "Closing soon" label with a straight "X days left" pill matching the Closing soon row, shown only for deadlines within 14 days. Add slightly more letter-spacing to the Bricolage Grotesque headings so they feel less cramped.
+
+2. Add a section near the bottom called "How this list is kept," with three expandable cards side by side on desktop and stacked on mobile: "How we find them," "How we verify," and "What we leave out." Each shows a one-line summary at rest and expands on tap to a short plain-language explanation. Content: opportunities are found through a twice-monthly scan of official sources and checked by a person before publishing; every listing links to the organization's own page, shows a "verified" date, and is hidden once the deadline passes; we skip anything that charges reading fees, vanity anthologies, pay-to-play contests, and anything found only through ads or direct messages.
+
+3. Reduce on-screen clutter using small, consistent line icons (use the Lucide icon set), with an accessible label on each:
+- On each card, show a calendar icon next to the deadline and a medal or gift icon next to the award, replacing the "DEADLINE" and "AWARD" text labels. Keep the deadline date, the award text, "No fee," and "Verified <date>" as visible text. Never make an icon the only way to see important information.
+- Replace the "More details +" text with a chevron icon that expands the card.
+- Add a small "i" info icon in the header that scrolls to the "How this list is kept" section.
+- On mobile, collapse the Type and Discipline filter rows behind a single "Filters" button with a sliders icon, showing a small count badge when any filter is active. Tapping it reveals the two chip rows. On desktop, keep the chips visible.
+- Add a bookmark icon on each card that saves the listing in the browser, plus a "Saved" toggle next to the sort control to show only saved listings. Note in a code comment that saved items stay on that device only.
+- Add a small share icon on each card that copies the official link.
+
+Make the icons subtle: soft color, consistent size, large enough to tap comfortably (at least 44px tap area), and tooltips on desktop. Don't add anything else, and don't change listings.json or its fields.
