@@ -74,11 +74,19 @@ test('every listing was verified within the last 45 days', () => {
 test('past-deadline listings are excluded from the displayed list', () => {
   const todayKey = localDateKey();
   const displayed = listings.filter((listing) => isDeadlineOpen(listing.deadline, todayKey));
+  const expiredEntries = listings.filter(
+    (listing) => listing.deadline !== 'rolling' && listing.deadline < todayKey,
+  );
 
   assert.equal(isDeadlineOpen('2000-01-01', todayKey), false, 'a past deadline should be closed');
   assert.ok(
     displayed.every((listing) => listing.deadline === 'rolling' || listing.deadline >= todayKey),
     'the displayed list should not include a past deadline',
+  );
+  assert.equal(
+    expiredEntries.length,
+    0,
+    `Past-deadline listing(s) remain in listings.json: ${expiredEntries.map((listing) => listing.name).join(', ')}. Remove or update them.`,
   );
 });
 
