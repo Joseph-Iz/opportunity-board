@@ -20,13 +20,14 @@ import {
   X,
 } from 'lucide-react';
 import listings from './listings.json';
+import { filterDisciplineLabels, filterTypeLabels, isDeadlineOpen } from './listing-rules';
 import { Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
 
 const queryClient = new QueryClient();
 type Listing = (typeof listings)[number];
 
-const types = ['All', 'Submission', 'Grant', 'Residency', 'Fellowship', 'Contest'];
-const disciplines = ['All', 'Poetry', 'Fiction', 'Nonfiction', 'Photography', 'Visual art'];
+const types = [...filterTypeLabels];
+const disciplines = [...filterDisciplineLabels];
 const classNameFor = (value: string) => value.toLowerCase().replaceAll(' ', '-');
 const disciplineAccents: Record<string, string> = {
   Poetry: 'var(--plum)',
@@ -40,6 +41,7 @@ const savedListingsStorageKey = 'quiet-opportunities-saved-v1';
 type ShareStatus = { name: string; status: 'copied' | 'error' } | null;
 
 function readSavedListings() {
+  // Browsing should still work when a browser blocks storage; only saved items are unavailable then.
   try {
     const raw = localStorage.getItem(savedListingsStorageKey);
     if (!raw) return new Set<string>();
@@ -58,6 +60,7 @@ async function copyTextToClipboard(text: string) {
     return;
   }
 
+  // Some browsers block the Clipboard API, so use their older copy command as a fallback.
   const field = document.createElement('textarea');
   field.value = text;
   field.setAttribute('readonly', '');
@@ -109,17 +112,19 @@ function Home() {
   }, [savedListings]);
 
   const today = new Date();
+  // Use the visitor's local calendar day so a deadline does not shift because of UTC conversion.
   const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+  // The ISO date strings sort in calendar order, so the header can use the newest verification date directly.
   const latestVerified = useMemo(
     () => listings.reduce((latest, item) => item.verified > latest ? item.verified : latest, ''),
     [],
   );
   const featureListings = useMemo(() => listings
-    .filter((item) => item.deadline !== 'rolling' && item.deadline >= todayKey)
+    .filter((item) => item.deadline !== 'rolling' && isDeadlineOpen(item.deadline, todayKey))
     .sort((a, b) => a.deadline.localeCompare(b.deadline))
     .slice(0, 3), [todayKey]);
   const visibleListings = useMemo(() => listings
-    .filter((item) => item.deadline === 'rolling' || item.deadline >= todayKey)
+    .filter((item) => isDeadlineOpen(item.deadline, todayKey))
     .filter((item) => !showSaved || savedListings.has(item.name))
     .filter((item) => activeType === 'All' || item.type.toLowerCase() === activeType.toLowerCase())
     .filter((item) => activeDiscipline === 'All' || item.discipline.includes(activeDiscipline))
@@ -134,6 +139,7 @@ function Home() {
     const [year, month, day] = deadline.split('-').map(Number);
     const due = new Date(year, month - 1, day);
     const current = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    // Calendar midnights avoid daylight-saving changes turning a full day into 23 or 25 hours.
     return Math.round((due.getTime() - current.getTime()) / 86400000);
   };
   const formatDate = (date: string) => new Date(`${date}T00:00:00Z`).toLocaleDateString('en-US', {
@@ -391,14 +397,7 @@ function FeatureCard({ item, index, days, formatDate, isSaved, onToggleSaved, on
   return (
     <article className={`feature-card discipline-edge-${accent} feature-card-${index + 1}`} style={edgeStyleFor(item)} data-testid={`feature-opportunity-${index + 1}`}>
       <div className="feature-topline">
-        <div className="feature-heading-tags">
-          <div className="feature-disciplines">
-            {item.discipline.map((discipline) => (
-              <span key={discipline} className={`discipline-badge discipline-${classNameFor(discipline)}`}>{discipline}</span>
-            ))}
-          </div>
-          <span className="feature-type">{item.type}</span>
-        </div>
+        <span className="feature-type">{item.type}</span>
         <div className="feature-stickers">
           {item.fee === 0 && <span className="sticker sticker-free">No fee</span>}
           <span className="sticker sticker-days-left">{days === 1 ? '1 day left' : `${days} days left`}</span>

@@ -489,7 +489,14 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
 .mini-closing { display: inline-flex; align-items: center; margin-top: 4px; padding: 4px 8px; border: 1px solid #e6d0c7; border-radius: 999px; background: #f3e2db; color: #714b42; font-size: 9px; font-weight: 700; line-height: 1; white-space: nowrap; }
 .dark .mini-closing { border-color: #72584f; background: #59483f; color: #f8dcd1; }
 .listing-actions { display: inline-flex; align-items: center; gap: 4px; }
-.card-icon-button { color: var(--muted); }
+.card-icon-button {
+  border: 0;
+  color: var(--muted);
+  background: transparent;
+  opacity: .76;
+}
+.card-icon-button:hover { background: transparent; opacity: 1; }
+.card-icon-button[aria-pressed="true"], .card-icon-button.is-copied { opacity: 1; }
 .card-icon-button svg { stroke-width: 1.8; }
 .feature-actions .card-icon-button { background: transparent; }
 .listing-more { grid-column: 1 / -1; border-top: 1px dashed var(--line); margin-top: 13px; padding-top: 8px; }
