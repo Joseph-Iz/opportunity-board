@@ -13,9 +13,12 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "test": "node --test test/*.test.mjs",
-    "check": "npm run typecheck && npm test && npm run build"
+    "check": "npm run typecheck && npm test && npm run build",
+    "check-links": "node scripts/check-links.mjs"
   },
   "dependencies": {
+    "@fontsource-variable/bricolage-grotesque": "5.3.0",
+    "@fontsource/dm-sans": "5.3.0",
     "lucide-react": "0.545.0",
     "react": "19.1.0",
     "react-dom": "19.1.0"
