@@ -24,6 +24,8 @@ npm run check      # typecheck, data tests, and production build
 
 `npm run build` writes a fully static site to `dist/`, which any static host can serve.
 
+Dependencies are pinned in `package-lock.json`. When updating them, install only versions that have been public for at least a week (for example `npm install --before=YYYY-MM-DD`), since malicious npm releases are usually caught and pulled within days.
+
 ## Add or edit listings
 
 Each opportunity is one object in `src/listings.json`:

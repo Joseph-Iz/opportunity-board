@@ -20,10 +20,10 @@ jobs:
         with:
           node-version-file: .nvmrc
 
-      # Supply-chain safeguard: only install package versions published at least 7 days ago,
-      # since malicious npm releases are usually caught and pulled within days.
+      # Installs exactly the versions pinned in package-lock.json, so every check
+      # runs against the same code that was reviewed.
       - name: Install dependencies
-        run: npm install --no-audit --no-fund --before="$(date -u -d '7 days ago' +%Y-%m-%d)"
+        run: npm ci --no-audit --no-fund
 
       - name: Typecheck
         run: npm run typecheck
@@ -33,10 +33,3 @@ jobs:
 
       - name: Build
         run: npm run build
-
-      # Saves the exact dependency versions that passed, so they can be pinned in the repo.
-      - name: Keep the resolved lockfile
-        uses: actions/upload-artifact@v4
-        with:
-          name: package-lock
-          path: package-lock.json
