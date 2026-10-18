@@ -1,0 +1,42 @@
+# Runs on every push and pull request: install, typecheck, test the listing data, and build.
+# A red X on GitHub means something below failed; open the run to see which step.
+name: Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      # Supply-chain safeguard: only install package versions published at least 7 days ago,
+      # since malicious npm releases are usually caught and pulled within days.
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund --before="$(date -u -d '7 days ago' +%Y-%m-%d)"
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test listing data
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      # Saves the exact dependency versions that passed, so they can be pinned in the repo.
+      - name: Keep the resolved lockfile
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-lock
+          path: package-lock.json
