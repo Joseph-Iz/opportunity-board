@@ -2,7 +2,7 @@
 
 A free, ad-free board of opportunities for emerging writers and artists: calls for submissions, grants, residencies, fellowships, and contests. Every listing is checked by a person against the organization's own page before it is published, and nothing on the board charges a fee to apply.
 
-> **Status:** in development. The listings in `src/listings.json` are clearly marked examples until verified opportunities replace them.
+> **Status:** in development, not yet public. Verified listings are being added as they pass review.
 
 ## How it works
 
@@ -34,7 +34,7 @@ Each opportunity is one object in `src/listings.json`:
 | --- | --- |
 | `name` | Listing title |
 | `type` | `submission`, `grant`, `residency`, `fellowship`, or `contest` |
-| `discipline` | One or more of `Poetry`, `Fiction`, `Nonfiction`, `Photography`, `Visual art` |
+| `discipline` | One or more of `Poetry`, `Fiction`, `Nonfiction`, `Photography`, `Visual art`, `Screenwriting`, `Playwriting` |
 | `deadline` | `YYYY-MM-DD`, or `rolling` |
 | `fee` | A number; must be `0` |
 | `award` | What is offered |
@@ -42,6 +42,7 @@ Each opportunity is one object in `src/listings.json`:
 | `link` | The official page, starting with `https://` |
 | `verified` | The date the official page was last checked, `YYYY-MM-DD` |
 | `note` | One plain sentence about the opportunity |
+| `disclaimer` | Optional. A short caveat shown on the card when a listing is legitimate but worth knowing more about, such as who runs it |
 
 Run `npm test` after editing.
 
