@@ -36,3 +36,11 @@ export function safeOfficialUrl(link: string): string | null {
     return null;
   }
 }
+
+// Visitors report a problem with a listing through a short anonymous Tally form. Passing the
+// listing's name fills in the form's "Which listing?" question so the report is easy to match.
+export const reportFormUrl = 'https://tally.so/r/YjDNQB';
+
+export function reportUrlFor(listingName?: string): string {
+  return listingName ? `${reportFormUrl}?listing=${encodeURIComponent(listingName)}` : reportFormUrl;
+}

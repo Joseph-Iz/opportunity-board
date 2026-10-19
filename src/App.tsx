@@ -15,7 +15,7 @@ import {
   X,
 } from 'lucide-react';
 import listings from './listings.json';
-import { filterDisciplineLabels, filterTypeLabels, isDeadlineOpen, safeOfficialUrl } from './listing-rules';
+import { filterDisciplineLabels, filterTypeLabels, isDeadlineOpen, reportUrlFor, safeOfficialUrl } from './listing-rules';
 
 type Listing = (typeof listings)[number];
 
@@ -330,7 +330,10 @@ function Home() {
 
         <footer className="site-footer">
           <span className="footer-squiggle" aria-hidden="true">〰</span>
-          <p>Always check the official page before submitting. Real opportunities never ask you to pay to be considered.</p>
+          <p>
+            Always check the official page before submitting. Real opportunities never ask you to pay to be considered.{' '}
+            <a className="footer-report" href={reportUrlFor()} target="_blank" rel="noopener noreferrer">Spot a problem? Report a listing</a>
+          </p>
           <span className="footer-squiggle" aria-hidden="true">〰</span>
         </footer>
       </div>
@@ -507,6 +510,10 @@ function ListingCard({ item, index, days, formatDate, isSaved, onToggleSaved, on
           <div><span>Who can apply</span><p>{item.eligibility}</p></div>
           <div><span>Application fee</span><p>{item.fee === 0 ? 'No fee' : `$${item.fee}`}</p></div>
           <div><span>About this call</span><p>{item.note}</p></div>
+          <div>
+            <span>Something wrong?</span>
+            <p><a className="report-link" href={reportUrlFor(item.name)} target="_blank" rel="noopener noreferrer">Report this listing</a></p>
+          </div>
         </div>
       </details>
     </article>
