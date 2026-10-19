@@ -15,7 +15,7 @@ import {
   X,
 } from 'lucide-react';
 import listings from './listings.json';
-import { filterDisciplineLabels, filterTypeLabels, isDeadlineOpen } from './listing-rules';
+import { filterDisciplineLabels, filterTypeLabels, isDeadlineOpen, safeOfficialUrl } from './listing-rules';
 
 type Listing = (typeof listings)[number];
 
@@ -156,7 +156,9 @@ function Home() {
   };
   const copyOfficialLink = async (item: Listing) => {
     try {
-      await copyTextToClipboard(item.link);
+      const href = safeOfficialUrl(item.link);
+      if (!href) throw new Error('This listing has no safe official link to copy.');
+      await copyTextToClipboard(href);
       setShareStatus({ name: item.name, status: 'copied' });
     } catch (error) {
       console.warn('Could not copy the official opportunity link.', error);
@@ -411,12 +413,23 @@ function FeatureCard({ item, index, days, formatDate, isSaved, onToggleSaved, on
         <span className="verified"><Check size={14} /> Verified {formatDate(item.verified)}</span>
         <div className="feature-actions">
           <ListingActionButtons item={item} isSaved={isSaved} onToggleSaved={onToggleSaved} onCopyLink={onCopyLink} copyStatus={copyStatus} />
-          <a href={item.link} target="_blank" rel="noopener noreferrer" className="official-link" data-testid={`link-feature-official-${index + 1}`}>
-            Go to official page <ArrowUpRight size={16} />
-          </a>
+          <OfficialLink link={item.link} testId={`link-feature-official-${index + 1}`} />
         </div>
       </div>
     </article>
+  );
+}
+
+function OfficialLink({ link, testId }: { link: string; testId: string }) {
+  const href = safeOfficialUrl(link);
+  // A link that fails the safety check is shown as unavailable instead of being rendered.
+  if (!href) {
+    return <span className="official-link official-link-unavailable" data-testid={testId}>Link unavailable</span>;
+  }
+  return (
+    <a className="official-link" href={href} target="_blank" rel="noopener noreferrer" data-testid={testId}>
+      Go to official page <ArrowUpRight size={16} />
+    </a>
   );
 }
 
@@ -455,9 +468,7 @@ function ListingCard({ item, index, days, formatDate, isSaved, onToggleSaved, on
           </div>
         </div>
         <span className="verified"><Check size={14} /> Verified {formatDate(item.verified)}</span>
-        <a className="official-link" href={item.link} target="_blank" rel="noopener noreferrer" data-testid={`link-official-${index + 1}`}>
-          Go to official page <ArrowUpRight size={16} />
-        </a>
+        <OfficialLink link={item.link} testId={`link-official-${index + 1}`} />
         <ListingActionButtons item={item} isSaved={isSaved} onToggleSaved={onToggleSaved} onCopyLink={onCopyLink} copyStatus={copyStatus} />
       </div>
       <details className="listing-more">

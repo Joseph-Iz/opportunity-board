@@ -1,0 +1,46 @@
+# Every Monday, visits each listing's official link. If any link is dead, now leads to a
+# different site (possible expired-domain takeover), or ends on an insecure page, it opens
+# (or updates) an issue on this repo listing what to re-verify.
+name: Weekly link check
+
+on:
+  schedule:
+    - cron: '17 15 * * 1' # Mondays, about 9 AM Mountain
+  workflow_dispatch: # also runnable by hand from the Actions tab
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check-links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      # The checker uses only Node's built-in tools, so nothing needs installing.
+      - name: Visit every official link
+        id: check
+        continue-on-error: true
+        run: node scripts/check-links.mjs
+
+      - name: Add the report to this run's summary
+        if: always()
+        run: cat link-report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Open or update an issue
+        if: steps.check.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="Link check found listings to re-verify"
+          existing=$(gh issue list --state open --search "\"$title\" in:title" --json number --jq '.[0].number')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body-file link-report.md
+          else
+            gh issue create --title "$title" --body-file link-report.md
+          fi
