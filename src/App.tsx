@@ -204,7 +204,7 @@ function Home() {
             <span className="wordmark-mark" aria-hidden="true">q<span>.</span></span>
             <span>Quiet Opportunities</span>
           </a>
-          <p className="header-promise">Good things for people who make things.</p>
+          <p className="header-promise">Good things for people who make things. Every call is free to apply and checked by a person.</p>
           <div className="header-actions">
             <span className="last-updated">Last updated <strong>{formatDate(latestVerified)}</strong></span>
             <a className="header-info icon-button" href="#how-this-list-is-kept" aria-label="How this list is kept" title="How this list is kept">
@@ -420,7 +420,7 @@ function FeatureCard({ item, index, days, formatDate, isSaved, onToggleSaved, on
         <span className="feature-type">{item.type}</span>
         <div className="feature-stickers">
           {item.fee === 0 && <span className="sticker sticker-free">No fee</span>}
-          <span className="sticker sticker-days-left">{days === 1 ? '1 day left' : `${days} days left`}</span>
+          {days <= 30 && <span className="sticker sticker-days-left">{days === 1 ? '1 day left' : `${days} days left`}</span>}
         </div>
       </div>
       <h3>{item.name}</h3>
