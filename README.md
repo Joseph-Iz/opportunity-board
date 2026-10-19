@@ -1,6 +1,6 @@
-# Opportunity Board
+# Callboard
 
-A free, ad-free board of opportunities for emerging writers and artists: calls for submissions, grants, residencies, fellowships, and contests. Every listing is checked by a person against the organization's own page before it is published, and nothing on the board charges a fee to apply.
+In theater, the callboard is where auditions and calls get posted. This one is a free, ad-free board of opportunities for emerging writers and artists: calls for submissions, grants, residencies, fellowships, and contests. Every listing is checked by a person against the organization's own page before it is published, and nothing on the board charges a fee to apply.
 
 > **Status:** in development, not yet public. Verified listings are being added as they pass review.
 
