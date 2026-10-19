@@ -32,7 +32,7 @@ const disciplineAccents: Record<string, string> = {
   Playwriting: 'var(--berry)',
 };
 // Saved items stay on this device only; this key stores them in this browser's local storage.
-const savedListingsStorageKey = 'quiet-opportunities-saved-v1';
+const savedListingsStorageKey = 'callboard-saved-v1';
 type ShareStatus = { name: string; status: 'copied' | 'error' } | null;
 
 function readSavedListings() {
@@ -108,7 +108,7 @@ function Home() {
   const [shareStatus, setShareStatus] = useState<ShareStatus>(null);
   const [darkMode, setDarkMode] = useState(() => {
     try {
-      return localStorage.getItem('quiet-opportunities-theme') === 'dark';
+      return localStorage.getItem('callboard-theme') === 'dark';
     } catch {
       return false;
     }
@@ -117,7 +117,7 @@ function Home() {
   useEffect(() => {
     document.documentElement.classList.toggle('dark', darkMode);
     try {
-      localStorage.setItem('quiet-opportunities-theme', darkMode ? 'dark' : 'light');
+      localStorage.setItem('callboard-theme', darkMode ? 'dark' : 'light');
     } catch {
       // Keep the selected theme for this visit if storage is unavailable.
     }
@@ -200,9 +200,9 @@ function Home() {
     <main className="quiet-page">
       <div className="page-shell">
         <header className="masthead">
-          <a className="wordmark" href="/" aria-label="Quiet Opportunities home">
-            <span className="wordmark-mark" aria-hidden="true">q<span>.</span></span>
-            <span>Quiet Opportunities</span>
+          <a className="wordmark" href="/" aria-label="Callboard home">
+            <span className="wordmark-mark" aria-hidden="true">c<span>.</span></span>
+            <span>Callboard</span>
           </a>
           <p className="header-promise">Good things for people who make things. Every call is free to apply and checked by a person.</p>
           <div className="header-actions">

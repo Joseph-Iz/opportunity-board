@@ -16,7 +16,7 @@ async function visit(link) {
       const response = await fetch(url, {
         redirect: 'manual',
         signal: AbortSignal.timeout(TIMEOUT_MS),
-        headers: { 'user-agent': 'OpportunityBoard-LinkCheck/1.0 (weekly check of listed official pages)' },
+        headers: { 'user-agent': 'Callboard-LinkCheck/1.0 (weekly check of listed official pages)' },
       });
       const next = response.headers.get('location');
       if (response.status >= 300 && response.status < 400 && next) {
