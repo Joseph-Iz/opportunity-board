@@ -10,6 +10,8 @@ In theater, the callboard is where auditions and calls get posted. This one is a
 2. A person reviews every candidate against the official page and approves or rejects it. The scan never publishes anything on its own.
 3. Approved listings go into `src/listings.json`. Automated tests check the data before the site is rebuilt.
 
+Visitors can flag a problem with any listing through a short anonymous form (linked in the footer and in each listing's details); reports are reviewed with each update.
+
 Listings must be free to apply, open to US adults nationwide (relocation for a program is fine), and verifiable on the organization's own site.
 
 ## Run it locally

@@ -37,3 +37,11 @@ test('every listing is free to apply', () => {
     assert.equal(listing.fee, 0, `${listing.name} charges a fee ($${listing.fee}); fee-based calls are not listed`);
   }
 });
+
+test('report links go to the Tally form and carry the listing name safely', async () => {
+  const { reportFormUrl, reportUrlFor } = await import('../src/listing-rules.ts');
+  assert.ok(safeOfficialUrl(reportFormUrl), 'the report form must be a plain https address');
+  assert.equal(new URL(reportFormUrl).hostname, 'tally.so');
+  const url = new URL(reportUrlFor('Trillium Arts "Miss Sarah" Fellowship & more'));
+  assert.equal(url.searchParams.get('listing'), 'Trillium Arts "Miss Sarah" Fellowship & more');
+});

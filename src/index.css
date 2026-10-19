@@ -534,7 +534,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
 .listing-more summary:hover { color: var(--ink); background: var(--paper-deep); }
 .listing-more summary svg { transition: transform 150ms ease; }
 .listing-more[open] summary svg { transform: rotate(180deg); }
-.expanded-details { display: grid; grid-template-columns: 1.3fr .6fr 1fr; gap: 22px; padding: 13px 0 3px; }
+.expanded-details { display: grid; grid-template-columns: 1.3fr .6fr 1fr .7fr; gap: 22px; padding: 13px 0 3px; }
 .expanded-details p { margin: 0; color: var(--ink); font-size: 13px; line-height: 1.5; }
 .trust-section { padding: 34px 0 36px; }
 .trust-heading { margin-bottom: 14px; }
@@ -704,3 +704,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
   line-height: 1.45;
 }
 .listing-disclaimer svg { flex: none; margin-top: 2px; }
+
+/* Report links: present but quiet, so they're easy to find without competing with the listings. */
+.footer-report, .report-link { color: inherit; text-decoration: underline; text-underline-offset: 3px; font-weight: 600; }
+.footer-report:hover, .report-link:hover { color: var(--coral); }
