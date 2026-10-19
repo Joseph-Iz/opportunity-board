@@ -28,6 +28,8 @@ const disciplineAccents: Record<string, string> = {
   Nonfiction: 'var(--sun)',
   Photography: 'var(--sky)',
   'Visual art': 'var(--mint)',
+  Screenwriting: 'var(--indigo)',
+  Playwriting: 'var(--berry)',
 };
 // Saved items stay on this device only; this key stores them in this browser's local storage.
 const savedListingsStorageKey = 'quiet-opportunities-saved-v1';
@@ -66,6 +68,22 @@ async function copyTextToClipboard(text: string) {
   } finally {
     field.remove();
   }
+}
+
+// Some listings are legitimate but carry a caveat worth showing (for example, who sponsors them).
+// The field is optional, so most listings don't have it.
+const disclaimerFor = (item: Listing): string | null =>
+  'disclaimer' in item && typeof item.disclaimer === 'string' && item.disclaimer.trim() ? item.disclaimer : null;
+
+function ListingDisclaimer({ item }: { item: Listing }) {
+  const disclaimer = disclaimerFor(item);
+  if (!disclaimer) return null;
+  return (
+    <p className="listing-disclaimer" data-testid="listing-disclaimer">
+      <Info size={14} aria-hidden="true" />
+      <span><span className="sr-only">Note: </span>{disclaimer}</span>
+    </p>
+  );
 }
 
 const edgeStyleFor = (item: Listing) => ({
@@ -409,6 +427,7 @@ function FeatureCard({ item, index, days, formatDate, isSaved, onToggleSaved, on
           <strong>{item.award}</strong>
         </div>
       </div>
+      <ListingDisclaimer item={item} />
       <div className="feature-foot">
         <span className="verified"><Check size={14} /> Verified {formatDate(item.verified)}</span>
         <div className="feature-actions">
@@ -452,6 +471,7 @@ function ListingCard({ item, index, days, formatDate, isSaved, onToggleSaved, on
           {item.fee === 0 && <span className="sticker sticker-free listing-free-sticker">No fee</span>}
         </div>
         <h3>{item.name}</h3>
+        <ListingDisclaimer item={item} />
       </div>
       <div className="listing-glance">
         <div className="glance-item">

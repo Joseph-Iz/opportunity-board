@@ -13,6 +13,8 @@ export const filterDisciplineLabels = [
   'Nonfiction',
   'Photography',
   'Visual art',
+  'Screenwriting',
+  'Playwriting',
 ] as const;
 
 export function isDeadlineOpen(deadline: string, todayKey: string): boolean {
