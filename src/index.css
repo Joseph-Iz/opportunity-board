@@ -279,7 +279,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
 }
 .sticker-days-left { border-color: #e6d0c7; background: #f3e2db; color: #714b42; }
 .dark .sticker-days-left { border-color: #72584f; background: #59483f; color: #f8dcd1; }
-.feature-type { color: var(--muted); font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; white-space: nowrap; }
+.feature-type { color: var(--muted); font-size: 10px; font-weight: 700; text-transform: capitalize; white-space: nowrap; }
 .feature-card h3 {
   max-width: 100%;
   margin: 3px 0 5px;
@@ -315,7 +315,8 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
 }
 .dark .sticker-free { border-color: #716849; background: #514b37; color: #f1e7c5; }
 .feature-stickers .sticker-free { min-width: 42px; height: 20px; padding: 0 6px; font-size: 8px; }
-.feature-foot { display: flex; align-items: center; justify-content: space-between; gap: 6px; border-top: 1px dashed var(--line); padding-top: 4px; }
+.feature-foot { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-top: auto; border-top: 1px dashed var(--line); padding-top: 4px; }
+.verified { white-space: nowrap; }
 .feature-foot .verified { color: var(--ink); font-size: 10px; font-weight: 600; }
 .feature-foot .official-link { min-height: 34px; padding: 0 8px; font-size: 9px; }
 .feature-actions { min-width: 0; display: flex; align-items: center; gap: 5px; }
@@ -352,13 +353,9 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
 .sort-note svg { color: var(--coral); }
 .filters {
   display: grid;
-  grid-template-columns: 1fr 1.35fr;
+  grid-template-columns: 1fr;
   align-items: center;
-  gap: 18px;
-  padding: 17px 18px;
-  background: var(--paper-deep);
-  border: 1px solid var(--line);
-  border-radius: 18px;
+  gap: 10px;
 }
 .mobile-filter-toggle {
   display: none;
@@ -388,8 +385,8 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
   font-size: 9px;
   font-weight: 700;
 }
-.filter-group { min-width: 0; }
-.filter-label { display: block; margin-bottom: 8px; color: var(--muted); font: 700 9px var(--font-body); letter-spacing: .13em; }
+.filter-group { min-width: 0; display: grid; grid-template-columns: 92px 1fr; align-items: center; gap: 10px; }
+.filter-label { display: block; margin: 0; color: var(--muted); font: 700 12px var(--font-body); }
 .chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
 .filter-chip {
   min-height: 44px;
@@ -516,10 +513,14 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
 .feature-actions .card-icon-button { background: transparent; }
 .listing-more { grid-column: 1 / -1; border-top: 1px dashed var(--line); margin-top: 13px; padding-top: 8px; }
 .listing-more summary {
-  width: 44px;
+  width: fit-content;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 4px;
+  padding: 0 10px;
+  font-size: 11px;
+  font-weight: 700;
   min-height: 44px;
   border-radius: 11px;
   color: var(--muted);
@@ -577,8 +578,6 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
 @media (max-width: 900px) {
   .page-shell { padding: 0 28px; }
   .filters { grid-template-columns: 1fr; gap: 13px; }
-  .filter-group { display: grid; grid-template-columns: 92px 1fr; align-items: center; gap: 10px; }
-  .filter-label { margin: 0; }
   .clear-button { justify-self: start; align-self: center; margin-left: 0; }
   .listing-card { grid-template-columns: minmax(0, .8fr) minmax(320px, 1.2fr); gap: 15px; }
   .listing-glance { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) auto; gap: 10px; }
@@ -622,6 +621,10 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
   }
   .feature-grid::-webkit-scrollbar { display: none; }
   .feature-card { min-height: 0; padding: 9px 10px 7px; scroll-snap-align: start; }
+  /* In the swipe row the tallest card sets the row height, so the caveat is shortened here;
+     the full text is always shown on the same listing in the list below. */
+  .feature-card .listing-disclaimer { margin-top: 4px; padding: 6px 8px; font-size: 11px; }
+  .feature-card .listing-disclaimer > span { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   .feature-card-2, .feature-card-3 { transform: none; }
   .feature-topline { gap: 4px; }
   .feature-heading-tags { gap: 4px; }
@@ -643,7 +646,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
   .directory-heading h2 { font-size: 20px; line-height: 1.1; letter-spacing: -.035em; white-space: nowrap; }
   .filters { grid-template-columns: 1fr; gap: 6px; padding: 0; background: transparent; border: 0; border-radius: 0; }
   .filter-group { display: grid; grid-template-columns: 64px minmax(0, 1fr); align-items: center; gap: 7px; }
-  .filter-label { margin: 0; font-size: 8px; }
+  .filter-label { margin: 0; font-size: 11px; }
   .chip-row { min-width: 0; flex-wrap: nowrap; gap: 6px; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
   .chip-row::-webkit-scrollbar { display: none; }
   .filter-chip { min-height: 44px; padding: 8px 12px; font-size: 10px; }
@@ -662,9 +665,9 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
   .listing-card { display: block; padding: 15px 15px 12px 20px; }
   .listing-primary h3 { font-size: 17px; }
   .listing-glance { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 13px 10px; margin-top: 14px; padding-top: 13px; border-top: 1px dashed var(--line); }
-  .listing-glance .listing-actions { grid-column: 1 / -1; }
+  .listing-glance .verified { grid-column: 1 / -1; }
+  .listing-glance .listing-actions { justify-self: end; }
   .listing-glance .card-icon-button { width: 44px; height: 44px; }
-  .listing-glance .verified { align-self: center; }
   .listing-glance .official-link { justify-self: start; }
   .glance-item strong { font-size: 11px; }
   .expanded-details { grid-template-columns: 1fr; gap: 12px; }

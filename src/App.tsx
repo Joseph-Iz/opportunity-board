@@ -86,6 +86,15 @@ function ListingDisclaimer({ item }: { item: Listing }) {
   );
 }
 
+// "Verified Oct 18" reads faster than "Verified Oct 18, 2026" and fits on one line;
+// the year is only shown when it isn't the current one.
+function formatShortDate(date: string) {
+  const sameYear = date.slice(0, 4) === String(new Date().getFullYear());
+  return new Date(`${date}T00:00:00Z`).toLocaleDateString('en-US', {
+    month: 'short', day: 'numeric', ...(sameYear ? {} : { year: 'numeric' }), timeZone: 'UTC',
+  });
+}
+
 const edgeStyleFor = (item: Listing) => ({
   '--edge-colors': item.discipline.map((discipline) => disciplineAccents[discipline]).join(', '),
 }) as CSSProperties;
@@ -218,7 +227,6 @@ function Home() {
         <section className="feature-section" aria-labelledby="feature-title">
           <div className="section-heading feature-heading">
             <div>
-              <p className="eyebrow"><span className="paint-dot" /> THREE DATES TO KEEP CLOSE</p>
               <h1 id="feature-title">Closing soon</h1>
             </div>
             <span className="heading-doodle" aria-hidden="true">〰</span>
@@ -247,7 +255,6 @@ function Home() {
         <section className="directory" aria-labelledby="directory-title">
           <div className="directory-heading">
             <div>
-              <p className="eyebrow"><span className="paint-dot paint-dot-orange" /> FIND YOUR KIND OF OPENING</p>
               <h2 id="directory-title">The opportunity shelf</h2>
             </div>
           </div>
@@ -264,8 +271,8 @@ function Home() {
             {activeFilterCount > 0 && <span className="filter-count-badge" aria-label={`${activeFilterCount} active filters`}>{activeFilterCount}</span>}
           </button>
           <div className={`filters ${mobileFiltersOpen ? 'is-open' : ''}`} id="opportunity-filters" aria-label="Filter opportunities">
-            <FilterGroup label="TYPE" title="Filter by opportunity type" values={types} selected={activeType} onSelect={setActiveType} testPrefix="type" />
-            <FilterGroup label="DISCIPLINE" title="Filter by discipline" values={disciplines} selected={activeDiscipline} onSelect={setActiveDiscipline} testPrefix="discipline" />
+            <FilterGroup label="Type" title="Filter by opportunity type" values={types} selected={activeType} onSelect={setActiveType} testPrefix="type" />
+            <FilterGroup label="Discipline" title="Filter by discipline" values={disciplines} selected={activeDiscipline} onSelect={setActiveDiscipline} testPrefix="discipline" />
           </div>
 
           <div className="results-toolbar" aria-live="polite">
@@ -429,7 +436,7 @@ function FeatureCard({ item, index, days, formatDate, isSaved, onToggleSaved, on
       </div>
       <ListingDisclaimer item={item} />
       <div className="feature-foot">
-        <span className="verified"><Check size={14} /> Verified {formatDate(item.verified)}</span>
+        <span className="verified"><Check size={14} /> Verified {formatShortDate(item.verified)}</span>
         <div className="feature-actions">
           <ListingActionButtons item={item} isSaved={isSaved} onToggleSaved={onToggleSaved} onCopyLink={onCopyLink} copyStatus={copyStatus} />
           <OfficialLink link={item.link} testId={`link-feature-official-${index + 1}`} />
@@ -487,13 +494,14 @@ function ListingCard({ item, index, days, formatDate, isSaved, onToggleSaved, on
             <strong>{item.award}</strong>
           </div>
         </div>
-        <span className="verified"><Check size={14} /> Verified {formatDate(item.verified)}</span>
+        <span className="verified"><Check size={14} /> Verified {formatShortDate(item.verified)}</span>
         <OfficialLink link={item.link} testId={`link-official-${index + 1}`} />
         <ListingActionButtons item={item} isSaved={isSaved} onToggleSaved={onToggleSaved} onCopyLink={onCopyLink} copyStatus={copyStatus} />
       </div>
       <details className="listing-more">
-        <summary aria-label={`More details for ${item.name}`} title="Expand or collapse listing details">
-          <ChevronDown size={18} aria-hidden="true" />
+        <summary aria-label={`More details for ${item.name}`}>
+          <span aria-hidden="true">Details</span>
+          <ChevronDown size={16} aria-hidden="true" />
         </summary>
         <div className="expanded-details">
           <div><span>Who can apply</span><p>{item.eligibility}</p></div>
@@ -509,7 +517,6 @@ function TrustSection() {
   return (
     <section className="trust-section" id="how-this-list-is-kept" aria-labelledby="trust-title">
       <div className="trust-heading">
-        <p className="eyebrow"><span className="paint-dot paint-dot-orange" /> A LITTLE TRANSPARENCY</p>
         <h2 id="trust-title">How this list is kept</h2>
       </div>
       <div className="trust-grid">
