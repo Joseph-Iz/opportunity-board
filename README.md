@@ -79,4 +79,4 @@ The people this board serves are emerging artists, often early in their careers 
 
 ## How it was built
 
-The first version was built with Replit's AI agent from plain-language prompts I wrote and revised over several design rounds. I then used Claude to review the code, restructure it into a standalone project, and add automated checks. The scan, verification rules, and every listing decision are mine.
+The first version was built with Replit's AI agent from plain-language prompts I wrote and revised over several design rounds. I then used Claude to review the code, restructure it into a standalone project, and add automated checks. The scan, verification rules, and every listing decision are reviewed by me.

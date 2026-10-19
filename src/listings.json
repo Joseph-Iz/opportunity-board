@@ -6,7 +6,7 @@
     "deadline": "2026-11-04",
     "fee": 0,
     "award": "$700 honorarium and a seven-night stay in a private suite in Mars Hill, NC",
-    "eligibility": "Artists 21 and older at any stage of their career; US applicants get the residency, international applicants cover their own travel.",
+    "eligibility": "Artists 21 and older at any stage of their career; applicants outside the US cover their own travel and visa costs.",
     "link": "https://www.trilliumartsnc.org/artist-residencies",
     "verified": "2026-10-18",
     "note": "A week of quiet studio time in the Blue Ridge Mountains. Applying is free; an optional mentorship add-on costs $75."
@@ -30,11 +30,11 @@
     "deadline": "2026-12-31",
     "fee": 0,
     "award": "$1,000, $750 and $500 each quarter, plus a $5,000 annual grand prize",
-    "eligibility": "Writers who have not published professionally; science fiction, fantasy or light horror up to 17,000 words. AI-written work is not accepted.",
+    "eligibility": "Writers who haven't professionally published a novel, more than one novelette, or more than three short stories. Science fiction, fantasy or light horror up to 17,000 words; AI-generated work is not accepted.",
     "link": "https://www.writersofthefuture.com/enter-writer-contest/",
     "verified": "2026-10-18",
     "note": "A long-running quarterly contest judged anonymously by professional writers. Entrants keep all publication rights.",
-    "disclaimer": "Run by Author Services, which manages the literary estate of L. Ron Hubbard. Some writers avoid the contest because of its links to the Church of Scientology, which Hubbard founded."
+    "disclaimer": "Started by L. Ron Hubbard and sponsored by Galaxy Press, the publisher of his fiction. Some writers avoid it because of its ties to the Church of Scientology, which Hubbard founded; the contest says it has no connection to the church."
   },
   {
     "name": "Steinbeck Fellowship (San José State University)",

@@ -25,6 +25,10 @@ jobs:
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
 
+      # Fails the check if any installed package has a known high or critical vulnerability.
+      - name: Check dependencies for known vulnerabilities
+        run: npm audit --audit-level=high
+
       - name: Typecheck
         run: npm run typecheck
 
