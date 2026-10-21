@@ -2,7 +2,9 @@
 
 In theater, the callboard is where auditions and calls get posted. This one is a free, ad-free board of opportunities for emerging writers and artists: calls for submissions, grants, residencies, fellowships, and contests. Every listing is checked by a person against the organization's own page before it is published, and nothing on the board charges a fee to apply.
 
-> **Status:** in development, not yet public. Verified listings are being added as they pass review.
+**Live site:** https://callboard-ccd.pages.dev
+
+> **Status:** live and growing. Verified listings are added as they pass review.
 
 ## How it works
 
@@ -24,7 +26,7 @@ npm run dev        # local preview at the address it prints
 npm run check      # typecheck, data tests, and production build
 ```
 
-`npm run build` writes a fully static site to `dist/`, which any static host can serve.
+`npm run build` writes a fully static site to `dist/`, which any static host can serve. The live site is hosted on Cloudflare Pages, which rebuilds it automatically whenever `main` changes and sends the security headers in `public/_headers`.
 
 Dependencies are pinned in `package-lock.json`. When updating them, install only versions that have been public for at least a week (for example `npm install --before=YYYY-MM-DD`), since malicious npm releases are usually caught and pulled within days.
 
@@ -75,7 +77,7 @@ The people this board serves are emerging artists, often early in their careers 
 | Injected or third-party scripts run on the page | A compromised dependency or a stray script tag tries to load code from elsewhere | A strict content security policy only allows scripts, styles, fonts and images from the site itself. |
 | A dependency is compromised | A malicious version of an npm package is published | Dependencies are few (about a dozen) and pinned in `package-lock.json`, resolved only from versions at least a week old. The GitHub check installs exactly those versions. |
 | Visitors are tracked | Third-party fonts, analytics or ads report who visits | No ads, analytics or accounts. Fonts are bundled with the site, so a visit makes no third-party requests. Saved listings stay in the visitor's own browser. |
-| The site is framed by a lookalike page | Another site embeds the board to borrow its credibility | Hosts that read `public/_headers` send `frame-ancestors 'none'`, which blocks embedding. |
+| The site is framed by a lookalike page | Another site embeds the board to borrow its credibility | Cloudflare Pages reads `public/_headers` and sends `frame-ancestors 'none'`, which blocks embedding (confirmed on the live site). |
 
 **Known limits.** Verification is only as current as its date: a call can change between checks, so each card links to the official page and the footer tells visitors to confirm there. The automated link check can't read a page the way a person does, so it flags problems for review rather than removing listings itself. The `<meta>` version of the security policy can't block framing; that protection depends on the host honoring `_headers`.
 
