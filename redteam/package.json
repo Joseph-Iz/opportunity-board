@@ -1,0 +1,16 @@
+{
+  "name": "callboard-redteam",
+  "private": true,
+  "type": "module",
+  "description": "Red-team test suite for the Callboard scan. Fictional pages only; nothing here is deployed.",
+  "scripts": {
+    "dry-run": "RT_MOCK=good promptfoo eval --no-cache --no-table -o results-dry-run.json; node summarize.mjs results-dry-run.json",
+    "eval": "promptfoo eval --no-cache --no-table -o results.json; node summarize.mjs results.json"
+  },
+  "engines": {
+    "node": ">=22.18"
+  },
+  "devDependencies": {
+    "promptfoo": "0.124.1"
+  }
+}

@@ -44,3 +44,7 @@ Thumbs.db
 .cache/
 .local/
 link-report.md
+
+# red-team run output
+redteam/results*.json
+redteam/results*.md

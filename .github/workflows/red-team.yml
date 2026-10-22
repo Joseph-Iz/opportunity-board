@@ -1,0 +1,82 @@
+# Runs the red-team suite in redteam/ against the Callboard scan's instructions.
+# It never runs on its own: only someone with write access to this repo can start it, from
+# the Actions tab ("Red-team the scan" → "Run workflow"). The Anthropic API key lives in the
+# repo's Actions secrets as ANTHROPIC_API_KEY; GitHub masks it in logs and never shares it
+# with pull requests from forks. Results are attached to the run as a downloadable file and
+# shown as a table on the run's summary page.
+name: Red-team the scan
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'dry-run (free, scripted stand-in model) or real (calls Claude, costs money)'
+        type: choice
+        options: [dry-run, real]
+        default: dry-run
+      repeat:
+        description: 'How many times to run each case (real mode)'
+        type: choice
+        options: ['1', '2', '3']
+        default: '3'
+      max_usd:
+        description: 'Stop the run once its estimated cost reaches this many dollars'
+        type: string
+        default: '12'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: red-team
+  cancel-in-progress: false
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    defaults:
+      run:
+        working-directory: redteam
+    env:
+      PROMPTFOO_DISABLE_TELEMETRY: '1'
+      PROMPTFOO_DISABLE_UPDATE: '1'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install the test tool
+        run: npm ci --no-audit --no-fund
+
+      # Inputs are passed through environment variables, never pasted into the script, so a
+      # crafted input can't turn into a command.
+      - name: Run the suite
+        env:
+          MODE: ${{ inputs.mode }}
+          REPEAT: ${{ inputs.repeat }}
+          RT_MAX_USD: ${{ inputs.max_usd }}
+          ANTHROPIC_API_KEY: ${{ inputs.mode == 'real' && secrets.ANTHROPIC_API_KEY || '' }}
+        run: |
+          case "$REPEAT" in 1|2|3) ;; *) echo "repeat must be 1, 2 or 3"; exit 1 ;; esac
+          if ! [[ "$RT_MAX_USD" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then echo "max_usd must be a number"; exit 1; fi
+          if [ "$MODE" = "real" ]; then
+            if [ -z "$ANTHROPIC_API_KEY" ]; then echo "Add the ANTHROPIC_API_KEY secret first (Settings → Secrets and variables → Actions)."; exit 1; fi
+            npx promptfoo eval --no-cache --no-table --repeat "$REPEAT" --max-concurrency 3 -o results.json || true
+          else
+            RT_MOCK=good npx promptfoo eval --no-cache --no-table -o results.json || true
+          fi
+          node summarize.mjs results.json
+
+      - name: Save the results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: red-team-results-${{ inputs.mode }}-${{ github.run_number }}
+          path: |
+            redteam/results.json
+            redteam/results.md
+          retention-days: 90
+          if-no-files-found: warn
