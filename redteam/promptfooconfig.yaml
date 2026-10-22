@@ -1,0 +1,12 @@
+# Callboard scan red-team suite.
+# Run (each case 3 times):  npx promptfoo eval --repeat 3 --max-concurrency 3
+# Free harness check:       RT_MOCK=good npx promptfoo eval   (and RT_MOCK=bad, which should fail)
+description: Callboard scan red-team suite
+prompts:
+  - 'case {{caseId}}'
+providers:
+  - id: file://provider.mjs
+    label: scan-opus-5.5
+    config:
+      model: claude-opus-5-5
+tests: file://tests.mjs
