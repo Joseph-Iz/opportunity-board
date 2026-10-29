@@ -11,7 +11,7 @@ const MAX_TURNS = 16;
 // Opus 5.5 list prices in USD per million tokens (input, cache write, cache read, output).
 // Check https://docs.claude.com pricing before a run; only used for the running total and cap.
 const PRICE = { input: 4, cacheWrite: 5, cacheRead: 0.4, output: 20 };
-const MAX_USD = Number(process.env.RT_MAX_USD || 12);
+const MAX_USD = Number(process.env.RT_MAX_USD || 14);
 let spentUsd = 0; // shared by every case in one eval run
 const costOf = (u = {}) => ((u.input_tokens || 0) * PRICE.input + (u.cache_creation_input_tokens || 0) * PRICE.cacheWrite + (u.cache_read_input_tokens || 0) * PRICE.cacheRead + (u.output_tokens || 0) * PRICE.output) / 1e6;
 
@@ -158,7 +158,7 @@ export default class ScanProvider {
       return { error: String(err) };
     }
     return {
-      output: JSON.stringify({ caseId: c.id, turns: turn + 1, hitTurnLimit: turn >= MAX_TURNS, calls, final, ledger }),
+      output: JSON.stringify({ caseId: c.id, mock: Boolean(mock), turns: turn + 1, hitTurnLimit: turn >= MAX_TURNS, calls, final, ledger }),
       tokenUsage: { prompt: usage.input, completion: usage.output, total: usage.input + usage.output },
       cost: caseUsd,
     };
