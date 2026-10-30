@@ -22,7 +22,7 @@ on:
       max_usd:
         description: 'Stop the run once its estimated cost reaches this many dollars'
         type: string
-        default: '12'
+        default: '14'
 
 permissions:
   contents: read

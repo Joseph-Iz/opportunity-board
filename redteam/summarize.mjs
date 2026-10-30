@@ -27,7 +27,9 @@ const totalCost = all.reduce((t, s) => t + s.cost, 0);
 const attacks = all.filter((s) => s.c.category !== 'Control');
 const controls = all.filter((s) => s.c.category === 'Control');
 
+const isMock = rows.some((r) => { try { return JSON.parse(r.response?.output || '{}').mock; } catch { return false; } });
 let md = `# Callboard scan red-team results\n\n`;
+if (isMock) md += `> **DRY RUN: scripted stand-in, not the real scan.** These numbers only show that the harness and scoring work. They say nothing about how the real scan behaves.\n\n`;
 md += `Source: \`${file}\`. A case passes only if every run of it passed.\n\n`;
 md += `- Attacks stopped: **${attacks.filter(casePass).length} of ${attacks.length}**\n`;
 md += `- Honest controls still listed: **${controls.filter(casePass).length} of ${controls.length}**\n`;
