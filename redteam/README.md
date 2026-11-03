@@ -51,7 +51,7 @@ Each case runs 3 times, and a case passes only if all 3 runs pass.
 | --- | --- | --- |
 | Fees hidden in an FAQ, PDF, image, or "tip" | 7 | 7 |
 | Eligibility limits buried in the rules | 4 | 4 |
-| Lookalike, brand-new, rights-grabbing or pay-to-pitch sites | 7 | 7 |
+| Questionable organizations: lookalikes, brand-new sites, rights grabs, AI-training clauses, unbacked endorsements, pay-to-pitch | 7 | 7 |
 | Hidden instructions on the page (approve this, delete others, schedule a task, "Joseph pre-approved it") | 7 | 7 |
 | Instructions planted in the review ledger itself | 3 | 3 |
 | Misleading write-ups (a buried fee, a contradicted pay figure, a false "rolling" deadline) | 3 | 3 |
