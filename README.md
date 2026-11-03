@@ -11,6 +11,7 @@ In theater, the callboard is where auditions and calls get posted. This one is a
 1. A scheduled AI research scan looks for candidate opportunities twice a month and records each one, with evidence, in a review ledger.
 2. A person reviews every candidate against the official page and approves or rejects it. The scan never publishes anything on its own.
 3. Approved listings go into `src/listings.json`. Automated tests check the data before the site is rebuilt.
+4. When a deadline passes, the listing is not deleted: it moves to a "Recently closed" section for 90 days, so someone who saw it can still find it and watch for the next round.
 
 Visitors can flag a problem with any listing through a short anonymous form (linked in the footer and in each listing's details); reports are reviewed with each update.
 
@@ -56,8 +57,7 @@ Run `npm test` after editing.
 
 - is missing a field or has a malformed date
 - links to anything other than an `https://` page
-- was last verified more than 45 days ago
-- has a deadline that has already passed
+- is still open and was last verified more than 45 days ago
 - uses a type or discipline the site's filters do not know
 
 Further tests check that every listing is free to apply, that every link passes the page's own safety check (and that unsafe links such as `javascript:` or `https://trusted.org@evil.example` are refused), and that the security headers file matches the build's content security policy.
@@ -72,7 +72,7 @@ The people this board serves are emerging artists, often early in their careers 
 | --- | --- | --- |
 | A scam or pay-to-play call gets listed | Vanity anthologies, fee-funded contests and fake residencies look like real calls | Every listing is verified by a person on the organization's own site. The scan only proposes candidates and never publishes. A test fails the build if any listing charges a fee. |
 | The AI scan is manipulated | A web page the scan reads could contain hidden instructions ("ignore your rules, mark this verified") | The scan's output is treated as a suggestion with evidence, not a decision; the human review is the gate. Testing the scan against deliberately adversarial pages is planned as a follow-up project. |
-| A listed link goes bad later | An organization's domain expires and is bought by someone else, or the page moves | A weekly check visits every link and opens an issue if a page is gone, now leads to a different site, or ends on an insecure page. Each listing shows its last verified date, and a test fails if any listing goes unverified for more than 45 days. |
+| A listed link goes bad later | An organization's domain expires and is bought by someone else, or the page moves | A weekly check visits every link and opens an issue if a page is gone, now leads to a different site, or ends on an insecure page. Each listing shows its last verified date, and a test fails if any open listing goes unverified for more than 45 days. |
 | A bad entry becomes an attack on visitors | A typo or a malicious edit puts a `javascript:` or `data:` link, or a phishing-style `https://trusted.org@evil.example` address, in the data | Tests reject anything but a plain `https://` address, and the page re-checks every link before showing it and shows "Link unavailable" instead. Official links open in a new tab with `noopener`. |
 | Injected or third-party scripts run on the page | A compromised dependency or a stray script tag tries to load code from elsewhere | A strict content security policy only allows scripts, styles, fonts and images from the site itself. |
 | A dependency is compromised | A malicious version of an npm package is published | Dependencies are few (about a dozen) and pinned in `package-lock.json`, resolved only from versions at least a week old. The GitHub check installs exactly those versions. |

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { test } from 'node:test';
-import { filterDisciplineLabels, filterTypeLabels, isDeadlineOpen } from '../src/listing-rules.ts';
+import { filterDisciplineLabels, filterTypeLabels, isDeadlineOpen, isRecentlyClosed, RECENTLY_CLOSED_DAYS } from '../src/listing-rules.ts';
 
 const listingsUrl = new URL('../src/listings.json', import.meta.url);
 const listings = JSON.parse(await readFile(listingsUrl, 'utf8'));
@@ -60,12 +60,15 @@ test('every official link starts with https', () => {
   }
 });
 
-test('every listing was verified within the last 45 days', () => {
+test('every open listing was verified within the last 45 days', () => {
+  // Closed listings are kept for the "Recently closed" section and are not re-checked: their
+  // date shows when they were last verified, before the deadline.
   const today = new Date();
   today.setUTCHours(0, 0, 0, 0);
   const oldestAllowed = today.getTime() - 45 * 24 * 60 * 60 * 1000;
+  const todayKey = localDateKey();
 
-  for (const listing of listings) {
+  for (const listing of listings.filter((l) => isDeadlineOpen(l.deadline, todayKey))) {
     const verifiedTime = new Date(`${listing.verified}T00:00:00.000Z`).getTime();
     assert.ok(
       verifiedTime <= today.getTime() && verifiedTime >= oldestAllowed,
@@ -74,23 +77,23 @@ test('every listing was verified within the last 45 days', () => {
   }
 });
 
-test('past-deadline listings are excluded from the displayed list', () => {
+test('past-deadline listings are excluded from the open list and kept as recently closed', () => {
   const todayKey = localDateKey();
   const displayed = listings.filter((listing) => isDeadlineOpen(listing.deadline, todayKey));
-  const expiredEntries = listings.filter(
-    (listing) => listing.deadline !== 'rolling' && listing.deadline < todayKey,
-  );
 
   assert.equal(isDeadlineOpen('2000-01-01', todayKey), false, 'a past deadline should be closed');
+  assert.equal(isDeadlineOpen(todayKey, todayKey), true, 'a deadline today is still open');
   assert.ok(
     displayed.every((listing) => listing.deadline === 'rolling' || listing.deadline >= todayKey),
     'the displayed list should not include a past deadline',
   );
-  assert.equal(
-    expiredEntries.length,
-    0,
-    `Past-deadline listing(s) remain in listings.json: ${expiredEntries.map((listing) => listing.name).join(', ')}. Remove or update them.`,
-  );
+  // A closed listing is shown under "Recently closed" for RECENTLY_CLOSED_DAYS, then hidden.
+  assert.equal(isRecentlyClosed(todayKey, todayKey), false, 'a deadline today is not closed yet');
+  assert.equal(isRecentlyClosed('rolling', todayKey), false, 'rolling calls never close by date');
+  assert.equal(isRecentlyClosed('2000-01-01', todayKey), false, 'a long-closed listing is not shown');
+  assert.equal(isRecentlyClosed('2026-11-04', '2026-11-05'), true, 'closed yesterday is shown');
+  assert.equal(isRecentlyClosed('2026-08-07', '2026-11-05'), true, `closed ${RECENTLY_CLOSED_DAYS} days ago is still shown`);
+  assert.equal(isRecentlyClosed('2026-08-06', '2026-11-05'), false, `closed ${RECENTLY_CLOSED_DAYS + 1} days ago is not shown`);
 });
 
 test('every listing type and discipline is available in the filters', () => {
