@@ -15,7 +15,7 @@ import {
   X,
 } from 'lucide-react';
 import listings from './listings.json';
-import { filterDisciplineLabels, filterTypeLabels, isDeadlineOpen, reportUrlFor, safeOfficialUrl } from './listing-rules';
+import { filterDisciplineLabels, filterTypeLabels, isDeadlineOpen, isRecentlyClosed, RECENTLY_CLOSED_DAYS, reportUrlFor, safeOfficialUrl } from './listing-rules';
 
 type Listing = (typeof listings)[number];
 
@@ -86,6 +86,12 @@ function ListingDisclaimer({ item }: { item: Listing }) {
   );
 }
 
+// The deadline day itself still counts as open, so it reads "Closes today", not "0 days left".
+function daysLeftText(days: number) {
+  if (days <= 0) return 'Closes today';
+  return days === 1 ? '1 day left' : `${days} days left`;
+}
+
 // "Verified Oct 18" reads faster than "Verified Oct 18, 2026" and fits on one line;
 // the year is only shown when it isn't the current one.
 function formatShortDate(date: string) {
@@ -153,6 +159,10 @@ function Home() {
       if (b.deadline === 'rolling') return -1;
       return a.deadline.localeCompare(b.deadline);
     }), [activeType, activeDiscipline, savedListings, showSaved, todayKey]);
+  // Closed calls are kept, not deleted: newest-closed first, for the last RECENTLY_CLOSED_DAYS days.
+  const recentlyClosed = useMemo(() => listings
+    .filter((item) => isRecentlyClosed(item.deadline, todayKey))
+    .sort((a, b) => b.deadline.localeCompare(a.deadline)), [todayKey]);
   const activeFilterCount = Number(activeType !== 'All') + Number(activeDiscipline !== 'All') + Number(showSaved);
 
   const daysUntil = (deadline: string) => {
@@ -326,6 +336,28 @@ function Home() {
           )}
         </section>
 
+        {recentlyClosed.length > 0 && (
+          <details className="closed-section" data-testid="section-recently-closed">
+            <summary>
+              <span><strong>Recently closed</strong> ({recentlyClosed.length})</span>
+              <ChevronDown size={18} aria-hidden="true" />
+            </summary>
+            <p className="closed-intro">These deadlines have passed. Many run every year, so the official page is the place to watch for the next round.</p>
+            <ul className="closed-list">
+              {recentlyClosed.map((item, index) => (
+                <li key={item.name}>
+                  <span className="closed-name">{item.name}</span>
+                  <span className="closed-date">Closed {formatDate(item.deadline)}</span>
+                  {safeOfficialUrl(item.link)
+                    ? <a className="closed-link" href={safeOfficialUrl(item.link)!} target="_blank" rel="noopener noreferrer" data-testid={`link-closed-${index + 1}`}>Their page <ArrowUpRight size={14} aria-hidden="true" /></a>
+                    : <span className="closed-link" data-testid={`link-closed-${index + 1}`}>Link unavailable</span>}
+                </li>
+              ))}
+            </ul>
+            <p className="closed-note">Shown for {RECENTLY_CLOSED_DAYS} days after closing. Details were last checked before the deadline and may have changed since.</p>
+          </details>
+        )}
+
         <TrustSection />
 
         <footer className="site-footer">
@@ -423,7 +455,7 @@ function FeatureCard({ item, index, days, formatDate, isSaved, onToggleSaved, on
         <span className="feature-type">{item.type}</span>
         <div className="feature-stickers">
           {item.fee === 0 && <span className="sticker sticker-free">No fee</span>}
-          {days <= 30 && <span className="sticker sticker-days-left">{days === 1 ? '1 day left' : `${days} days left`}</span>}
+          {days <= 30 && <span className="sticker sticker-days-left">{daysLeftText(days)}</span>}
         </div>
       </div>
       <h3>{item.name}</h3>
@@ -489,7 +521,7 @@ function ListingCard({ item, index, days, formatDate, isSaved, onToggleSaved, on
             <CalendarDays className="fact-icon" size={15} aria-hidden="true" />
             <strong>{deadlineText}</strong>
           </div>
-          {days !== null && days <= 14 && <span className="mini-closing">{days === 1 ? '1 day left' : `${days} days left`}</span>}
+          {days !== null && days <= 14 && <span className="mini-closing">{daysLeftText(days)}</span>}
         </div>
         <div className="glance-item">
           <div className="glance-value" role="group" aria-label={`Award: ${item.award}`}>
@@ -545,7 +577,7 @@ function TrustSection() {
             </span>
             <ChevronDown size={18} aria-hidden="true" />
           </summary>
-          <p>Each listing links to the organization's own page, shows its verification date, and is hidden after the deadline passes.</p>
+          <p>Each listing links to the organization's own page, shows its verification date, and moves to “Recently closed” once the deadline passes.</p>
         </details>
         <details className="trust-card">
           <summary title="Expand or collapse: what is left out">
