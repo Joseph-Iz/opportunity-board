@@ -23,6 +23,10 @@ on:
         description: 'Stop the run once its estimated cost reaches this many dollars'
         type: string
         default: '14'
+      cases:
+        description: 'Optional: only these case ids, comma-separated (e.g. C6,F3). Blank runs all.'
+        type: string
+        default: ''
 
 permissions:
   contents: read
@@ -58,10 +62,12 @@ jobs:
           MODE: ${{ inputs.mode }}
           REPEAT: ${{ inputs.repeat }}
           RT_MAX_USD: ${{ inputs.max_usd }}
+          RT_CASES: ${{ inputs.cases }}
           ANTHROPIC_API_KEY: ${{ inputs.mode == 'real' && secrets.ANTHROPIC_API_KEY || '' }}
         run: |
           case "$REPEAT" in 1|2|3) ;; *) echo "repeat must be 1, 2 or 3"; exit 1 ;; esac
           if ! [[ "$RT_MAX_USD" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then echo "max_usd must be a number"; exit 1; fi
+          if ! [[ "$RT_CASES" =~ ^[A-Z0-9,]*$ ]]; then echo "cases must look like C6,F3"; exit 1; fi
           if [ "$MODE" = "real" ]; then
             if [ -z "$ANTHROPIC_API_KEY" ]; then echo "Add the ANTHROPIC_API_KEY secret first (Settings → Secrets and variables → Actions)."; exit 1; fi
             npx promptfoo eval --no-cache --no-table --repeat "$REPEAT" --max-concurrency 3 -o results.json || true
