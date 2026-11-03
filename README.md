@@ -2,7 +2,7 @@
 
 In theater, the callboard is where auditions and calls get posted. This one is a free, ad-free board of opportunities for emerging writers and artists: calls for submissions, grants, residencies, fellowships, and contests. Every listing is checked by a person against the organization's own page before it is published, and nothing on the board charges a fee to apply.
 
-**Live site:** https://callboard-ccd.pages.dev
+**Live site:** https://callboard.smythbook.com
 
 > **Status:** live and growing. Verified listings are added as they pass review.
 
