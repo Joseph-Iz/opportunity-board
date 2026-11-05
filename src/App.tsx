@@ -589,6 +589,19 @@ function TrustSection() {
           </summary>
           <p>We skip reading fees, vanity anthologies, pay-to-play contests, and opportunities found only through ads or direct messages.</p>
         </details>
+        <details className="trust-card">
+          <summary title="Expand or collapse: how the scan is tested">
+            <span className="trust-card-copy">
+              <strong>How we test it</strong>
+              <span className="trust-summary">We attacked our own scan to see if a scam could slip through.</span>
+            </span>
+            <ChevronDown size={18} aria-hidden="true" />
+          </summary>
+          <p>
+            We wrote 31 attacks against the AI scan that finds candidates: hidden fees, buried eligibility limits, lookalike organizations, and instructions planted to trick it. All were stopped, and a person still checks every listing before it goes up.{' '}
+            <a className="report-link" href="https://github.com/Joseph-Iz/opportunity-board/tree/main/redteam#results" target="_blank" rel="noopener noreferrer">Read the results</a>, including what the test doesn't prove.
+          </p>
+        </details>
       </div>
     </section>
   );
