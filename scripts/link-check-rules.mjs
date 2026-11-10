@@ -30,5 +30,7 @@ export function classifyResult({ hops, status, error }) {
     return { level: 'warning', reason: `Site blocked the automated check (HTTP ${status}); check by hand` };
   }
   if (status >= 400) return { level: 'problem', reason: `Unexpected response (HTTP ${status})` };
+  // A redirect that names no destination was never followed, so the page was not actually seen.
+  if (status >= 300) return { level: 'warning', reason: `Redirected without a destination (HTTP ${status}); check by hand` };
   return { level: 'ok', reason: hops.length > 1 ? `OK after ${hops.length - 1} redirect(s)` : 'OK' };
 }

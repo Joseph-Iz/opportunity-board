@@ -113,21 +113,29 @@ function Home() {
   const [savedListings, setSavedListings] = useState<Set<string>>(readSavedListings);
   const [shareStatus, setShareStatus] = useState<ShareStatus>(null);
   const [darkMode, setDarkMode] = useState(() => {
+    // A visitor's own choice wins; until they make one, follow their device's light/dark setting.
     try {
-      return localStorage.getItem('callboard-theme') === 'dark';
+      const stored = localStorage.getItem('callboard-theme');
+      if (stored === 'dark' || stored === 'light') return stored === 'dark';
     } catch {
-      return false;
+      // Storage is blocked; fall through to the device setting.
     }
+    return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
   });
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', darkMode);
+  }, [darkMode]);
+
+  const toggleTheme = () => {
+    const next = !darkMode;
+    setDarkMode(next);
     try {
-      localStorage.setItem('callboard-theme', darkMode ? 'dark' : 'light');
+      localStorage.setItem('callboard-theme', next ? 'dark' : 'light');
     } catch {
       // Keep the selected theme for this visit if storage is unavailable.
     }
-  }, [darkMode]);
+  };
 
   useEffect(() => {
     try {
@@ -206,8 +214,16 @@ function Home() {
     }, 1800);
   };
 
+  const shareAnnouncement = !shareStatus
+    ? ''
+    : shareStatus.status === 'copied'
+      ? `Official link copied for ${shareStatus.name}.`
+      : `Could not copy the official link for ${shareStatus.name}.`;
+
   return (
     <main className="quiet-page">
+      {/* Read aloud by screen readers when a link is copied; invisible on screen. */}
+      <p className="sr-only" role="status" aria-live="polite">{shareAnnouncement}</p>
       <div className="page-shell">
         <header className="masthead">
           <a className="wordmark" href="/" aria-label="Callboard home">
@@ -223,7 +239,7 @@ function Home() {
             <button
               className="theme-toggle"
               type="button"
-              onClick={() => setDarkMode((current) => !current)}
+              onClick={toggleTheme}
               aria-label={`Switch to ${darkMode ? 'light' : 'dark'} mode`}
               aria-pressed={darkMode}
               data-testid="button-theme-toggle"
@@ -280,13 +296,13 @@ function Home() {
             <span>Filters</span>
             {activeFilterCount > 0 && <span className="filter-count-badge" aria-label={`${activeFilterCount} active filters`}>{activeFilterCount}</span>}
           </button>
-          <div className={`filters ${mobileFiltersOpen ? 'is-open' : ''}`} id="opportunity-filters" aria-label="Filter opportunities">
+          <div className={`filters ${mobileFiltersOpen ? 'is-open' : ''}`} id="opportunity-filters" role="group" aria-label="Filter opportunities">
             <FilterGroup label="Type" title="Filter by opportunity type" values={types} selected={activeType} onSelect={setActiveType} testPrefix="type" />
             <FilterGroup label="Discipline" title="Filter by discipline" values={disciplines} selected={activeDiscipline} onSelect={setActiveDiscipline} testPrefix="discipline" />
           </div>
 
-          <div className="results-toolbar" aria-live="polite">
-            <div className="results-bar">
+          <div className="results-toolbar">
+            <div className="results-bar" aria-live="polite">
               <p><strong>{visibleListings.length}</strong> {visibleListings.length === 1 ? 'opportunity' : 'opportunities'} to explore</p>
               {(activeType !== 'All' || activeDiscipline !== 'All') && (
                 <span className="active-filter-note">{[activeType !== 'All' && activeType, activeDiscipline !== 'All' && activeDiscipline].filter(Boolean).join(' · ')}</span>
@@ -349,7 +365,7 @@ function Home() {
                   <span className="closed-name">{item.name}</span>
                   <span className="closed-date">Closed {formatDate(item.deadline)}</span>
                   {safeOfficialUrl(item.link)
-                    ? <a className="closed-link" href={safeOfficialUrl(item.link)!} target="_blank" rel="noopener noreferrer" data-testid={`link-closed-${index + 1}`}>Their page <ArrowUpRight size={14} aria-hidden="true" /></a>
+                    ? <a className="closed-link" href={safeOfficialUrl(item.link)!} target="_blank" rel="noopener noreferrer" data-testid={`link-closed-${index + 1}`}>Their page<span className="sr-only"> for {item.name} (opens in a new tab)</span> <ArrowUpRight size={14} aria-hidden="true" /></a>
                     : <span className="closed-link" data-testid={`link-closed-${index + 1}`}>Link unavailable</span>}
                 </li>
               ))}
@@ -364,7 +380,7 @@ function Home() {
           <span className="footer-squiggle" aria-hidden="true">〰</span>
           <p>
             Always check the official page before submitting. Real opportunities never ask you to pay to be considered.{' '}
-            <a className="footer-report" href={reportUrlFor()} target="_blank" rel="noopener noreferrer">Spot a problem? Report a listing</a>
+            <a className="footer-report" href={reportUrlFor()} target="_blank" rel="noopener noreferrer">Spot a problem? Report a listing<span className="sr-only"> (opens in a new tab)</span></a>
           </p>
           <span className="footer-squiggle" aria-hidden="true">〰</span>
         </footer>
@@ -474,14 +490,14 @@ function FeatureCard({ item, index, days, formatDate, isSaved, onToggleSaved, on
         <span className="verified"><Check size={14} /> Verified {formatShortDate(item.verified)}</span>
         <div className="feature-actions">
           <ListingActionButtons item={item} isSaved={isSaved} onToggleSaved={onToggleSaved} onCopyLink={onCopyLink} copyStatus={copyStatus} />
-          <OfficialLink link={item.link} testId={`link-feature-official-${index + 1}`} />
+          <OfficialLink link={item.link} name={item.name} testId={`link-feature-official-${index + 1}`} />
         </div>
       </div>
     </article>
   );
 }
 
-function OfficialLink({ link, testId }: { link: string; testId: string }) {
+function OfficialLink({ link, name, testId }: { link: string; name: string; testId: string }) {
   const href = safeOfficialUrl(link);
   // A link that fails the safety check is shown as unavailable instead of being rendered.
   if (!href) {
@@ -489,7 +505,7 @@ function OfficialLink({ link, testId }: { link: string; testId: string }) {
   }
   return (
     <a className="official-link" href={href} target="_blank" rel="noopener noreferrer" data-testid={testId}>
-      Go to official page <ArrowUpRight size={16} />
+      Go to official page<span className="sr-only"> for {name} (opens in a new tab)</span> <ArrowUpRight size={16} aria-hidden="true" />
     </a>
   );
 }
@@ -530,7 +546,7 @@ function ListingCard({ item, index, days, formatDate, isSaved, onToggleSaved, on
           </div>
         </div>
         <span className="verified"><Check size={14} /> Verified {formatShortDate(item.verified)}</span>
-        <OfficialLink link={item.link} testId={`link-official-${index + 1}`} />
+        <OfficialLink link={item.link} name={item.name} testId={`link-official-${index + 1}`} />
         <ListingActionButtons item={item} isSaved={isSaved} onToggleSaved={onToggleSaved} onCopyLink={onCopyLink} copyStatus={copyStatus} />
       </div>
       <details className="listing-more">
@@ -544,7 +560,7 @@ function ListingCard({ item, index, days, formatDate, isSaved, onToggleSaved, on
           <div><span>About this call</span><p>{item.note}</p></div>
           <div>
             <span>Something wrong?</span>
-            <p><a className="report-link" href={reportUrlFor(item.name)} target="_blank" rel="noopener noreferrer">Report this listing</a></p>
+            <p><a className="report-link" href={reportUrlFor(item.name)} target="_blank" rel="noopener noreferrer">Report this listing<span className="sr-only">: {item.name} (opens in a new tab)</span></a></p>
           </div>
         </div>
       </details>

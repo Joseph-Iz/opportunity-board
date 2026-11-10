@@ -43,8 +43,8 @@ function DefaultFallback({ error, resetError }: ErrorFallbackProps) {
           Something went wrong
         </h1>
         <p className="mt-2 text-sm text-gray-600">
-          This part of the app hit an error. The rest of the app is still
-          running.
+          Callboard hit an error and could not show the list. Try again, or
+          reload the page.
         </p>
         {/* Dev only: messages can carry API responses and other internals. */}
         {import.meta.env.DEV ? (
