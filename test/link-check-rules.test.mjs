@@ -30,3 +30,8 @@ test('the weekly check flags dead, moved, hijacked and insecure links', () => {
   const unreachable = classifyResult({ hops: ['https://journal.org/call'], error: 'timed out' });
   assert.equal(unreachable.level, 'problem');
 });
+
+test('a redirect that names no destination is flagged for a hand check, not passed', () => {
+  const dangling = classifyResult({ hops: ['https://journal.org/call'], status: 302 });
+  assert.equal(dangling.level, 'warning');
+});
