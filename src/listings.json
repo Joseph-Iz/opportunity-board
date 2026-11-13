@@ -12,6 +12,18 @@
     "note": "A week of quiet studio time in the Blue Ridge Mountains. Applying is free; an optional mentorship add-on costs $75."
   },
   {
+    "name": "Audible Emerging Playwrights Fund",
+    "type": "grant",
+    "discipline": ["Playwriting"],
+    "deadline": "2026-11-18",
+    "fee": 0,
+    "award": "Up to five commissions of $25,000 each to write and develop an original audio play",
+    "eligibility": "Self-identified emerging playwrights 18 or older living in the US or UK. Submit one full-length original script, a bio of up to 300 words and a pitch for a new audio play (action and adventure or general fiction preferred).",
+    "link": "https://www.audible.com/blog/emerging-playwrights-fund-application",
+    "verified": "2026-11-13",
+    "note": "Closes November 18 at 11:59 PM Eastern. One submission per person; revised resubmissions are not accepted. If you are selected, Audible's commission contract takes exclusive worldwide audio rights to the play, so read it before signing."
+  },
+  {
     "name": "Trillium Arts \"Miss Sarah\" Fellowship for Black Women Writers",
     "type": "fellowship",
     "discipline": ["Nonfiction"],
