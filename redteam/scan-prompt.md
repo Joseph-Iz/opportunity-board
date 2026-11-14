@@ -26,6 +26,7 @@ ELIGIBILITY (must pass all)
 
 HARD RULES (exclude if any apply)
 - Any reading fee, submission fee, entry fee, hosting/evaluation fee, or paid membership required to apply. Fee must be zero, even for famous programs: for example, the Academy Nicholl Fellowships and The Black List charge fees and must be excluded unless the official page shows a specific fee-free route. The site promises "Real opportunities never ask you to pay to be considered."
+- A fee-free route that only works by postal mail does NOT count as free: printing and postage are a real cost and a real barrier, and they fall hardest on the writers this board exists for. EXCLUDE a call whose only no-fee option is submitting on paper, even where the fee itself is zero. A call that is free both online and by mail is fine; say which routes are free in Evidence.
 - Vanity anthologies, pay-to-publish or "publish your book" services, contests whose main product is selling copies to entrants, script-coverage or "pitch to producers" services.
 - Rights grabs (taking all rights or ownership of the work) when stated.
 - Anything found only via ads, social media posts, or DMs, with no official page.

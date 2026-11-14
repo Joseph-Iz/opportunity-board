@@ -212,23 +212,6 @@
     "note": "Free to submit through 2026, thanks to donors. Fiction and poetry departments are currently closed."
   },
   {
-    "name": "AGNI (by mail)",
-    "type": "submission",
-    "discipline": [
-      "Poetry",
-      "Fiction",
-      "Nonfiction"
-    ],
-    "deadline": "2026-12-15",
-    "fee": 0,
-    "feeCondition": "Free only by post. Submitting online costs $3.",
-    "award": "$30 per page for prose, $50 per page for poetry (up to $300)",
-    "eligibility": "Writers of any identity, location or publication history; unpublished work in English.",
-    "link": "https://agnionline.bu.edu/submit/",
-    "verified": "2026-10-19",
-    "note": "Free only when sent on paper by mail; submitting online costs $3. Reading period runs to December 15."
-  },
-  {
     "name": "Sierra Nevada Review",
     "type": "submission",
     "discipline": [
