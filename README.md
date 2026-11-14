@@ -15,7 +15,7 @@ In theater, the callboard is where auditions and calls get posted. This one is a
 
 Visitors can flag a problem with any listing through a short anonymous form (linked in the footer and in each listing's details); reports are reviewed with each update.
 
-Listings must be free to apply, open to US adults nationwide (relocation for a program is fine), and verifiable on the organization's own site.
+Listings must be free to apply, open to US adults nationwide (relocation for a program is fine), and verifiable on the organization's own site. "Free" means free to submit online: a call whose only no-fee route is postal mail is left off, because printing and postage are a cost in everything but name. Where a call is free on the route the listing covers but charges on another — a genre, a contest, an optional add-on — the listing says so on its face rather than claiming an unqualified "No fee".
 
 ## Run it locally
 
