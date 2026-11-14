@@ -86,6 +86,24 @@ function ListingDisclaimer({ item }: { item: Listing }) {
   );
 }
 
+// Several calls are free only on one route: free by post but paid online, free for one genre but
+// not another, free to submit but with a paid add-on. A plain "No fee" badge on those is accurate
+// about the listed route and misleading about everything else, so the badge says which it is and
+// the exact condition sits with the fee in the details panel.
+function FeeSticker({ item, extraClass = '' }: { item: Listing; extraClass?: string }) {
+  const conditional = Boolean(item.feeCondition);
+  return (
+    <span
+      className={`sticker sticker-free ${conditional ? 'sticker-free-conditional ' : ''}${extraClass}`.trim()}
+      title={item.feeCondition || undefined}
+      data-testid={conditional ? 'sticker-fee-conditional' : 'sticker-fee-free'}
+    >
+      {conditional ? 'Free with limits' : 'No fee'}
+      {conditional && <span className="sr-only">: {item.feeCondition}</span>}
+    </span>
+  );
+}
+
 // The deadline day itself still counts as open, so it reads "Closes today", not "0 days left".
 function daysLeftText(days: number) {
   if (days <= 0) return 'Closes today';
@@ -470,7 +488,7 @@ function FeatureCard({ item, index, days, formatDate, isSaved, onToggleSaved, on
       <div className="feature-topline">
         <span className="feature-type">{item.type}</span>
         <div className="feature-stickers">
-          {item.fee === 0 && <span className="sticker sticker-free">No fee</span>}
+          {item.fee === 0 && <FeeSticker item={item} />}
           {days <= 30 && <span className="sticker sticker-days-left">{daysLeftText(days)}</span>}
         </div>
       </div>
@@ -526,7 +544,7 @@ function ListingCard({ item, index, days, formatDate, isSaved, onToggleSaved, on
             <span key={discipline} className={`discipline-badge discipline-${classNameFor(discipline)}`}>{discipline}</span>
           ))}
           <span className="type-tag">{item.type}</span>
-          {item.fee === 0 && <span className="sticker sticker-free listing-free-sticker">No fee</span>}
+          {item.fee === 0 && <FeeSticker item={item} extraClass="listing-free-sticker" />}
         </div>
         <h3>{item.name}</h3>
         <ListingDisclaimer item={item} />
@@ -556,7 +574,12 @@ function ListingCard({ item, index, days, formatDate, isSaved, onToggleSaved, on
         </summary>
         <div className="expanded-details">
           <div><span>Who can apply</span><p>{item.eligibility}</p></div>
-          <div><span>Application fee</span><p>{item.fee === 0 ? 'No fee' : `$${item.fee}`}</p></div>
+          <div>
+            <span>Application fee</span>
+            {/* When a condition applies, it answers "what does this cost?" more completely than
+                a bare "No fee" line does, so it replaces that line rather than following it. */}
+            <p>{item.feeCondition || (item.fee === 0 ? 'No fee' : `$${item.fee}`)}</p>
+          </div>
           <div><span>About this call</span><p>{item.note}</p></div>
           <div>
             <span>Something wrong?</span>

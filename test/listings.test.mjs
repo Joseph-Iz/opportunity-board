@@ -11,6 +11,7 @@ const requiredFields = [
   'discipline',
   'deadline',
   'fee',
+  'feeCondition',
   'award',
   'eligibility',
   'link',
@@ -44,6 +45,8 @@ test('every listing includes all required fields in the expected format', () => 
     assert.ok(Array.isArray(listing.discipline) && listing.discipline.length > 0, `Listing ${index + 1} needs at least one discipline`);
     assert.ok(listing.deadline === 'rolling' || isRealCalendarDate(listing.deadline), `Listing ${index + 1} has an invalid deadline`);
     assert.equal(typeof listing.fee, 'number', `Listing ${index + 1} needs a numeric fee`);
+    assert.equal(typeof listing.feeCondition, 'string', `Listing ${index + 1} needs a text "feeCondition" (empty string when the call is free with no conditions)`);
+    assert.ok(listing.feeCondition === '' || listing.fee === 0, `Listing ${index + 1} states a fee condition but also charges a fee`);
     for (const field of ['award', 'eligibility', 'link', 'verified', 'note']) {
       assert.equal(typeof listing[field], 'string', `Listing ${index + 1} needs a text "${field}"`);
     }

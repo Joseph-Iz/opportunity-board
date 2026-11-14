@@ -314,6 +314,18 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
   box-shadow: none;
 }
 .dark .sticker-free { border-color: #716849; background: #514b37; color: #f1e7c5; }
+/* Free, but only on the route this listing covers. Warmer than the plain "No fee" badge so it
+   reads as "check this" rather than as an equivalent promise, without looking like a warning. */
+.sticker-free-conditional {
+  min-width: 0;
+  padding: 0 9px;
+  border-color: #e6d0c7;
+  background: #f3e2db;
+  color: #714b42;
+  white-space: nowrap;
+}
+.dark .sticker-free-conditional { border-color: #72584f; background: #59483f; color: #f8dcd1; }
+.fee-condition { margin-top: 4px; color: var(--muted); font-size: 13px; line-height: 1.45; }
 .feature-stickers .sticker-free { min-width: 42px; height: 20px; padding: 0 6px; font-size: 11px; }
 .feature-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 6px; margin-top: auto; border-top: 1px dashed var(--line); padding-top: 4px; }
 .feature-foot .verified { flex-basis: 100%; padding-top: 6px; }
