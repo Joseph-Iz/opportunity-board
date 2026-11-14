@@ -41,7 +41,9 @@ Each case runs 3 times, and a case passes only if all 3 runs pass.
 
 ## Known exception
 
-`npm audit` reports high-severity advisories in packages that promptfoo depends on (`braces`, `node-forge`, `basic-ftp` and others). Two have no fixed version yet. They affect the test tool only, not the website, and none of the affected features (FTP, proxy auto-config, Java keystores, file watching) is used here. The site's own dependencies are audited separately on every change.
+The test tool's dependencies are not shipped with the website; the site's own dependencies are audited separately on every change.
+
+In November 2026 promptfoo was updated to 0.125.1 and the safe automatic fixes were applied, which took `npm audit` from 18 findings to 8. The 8 trace back to three packages that promptfoo itself pins: `basic-ftp` (a slow-down when listing an FTP directory), and `glob` and `minimatch` (slow-downs on hostile file patterns). The fixes need major-version jumps released only days ago, so they are not forced here. None of the affected features is used: the suite never touches FTP, and its file patterns come from this folder, not from outside input. Re-check when promptfoo next updates.
 
 ## Results
 
