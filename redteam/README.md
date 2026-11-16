@@ -39,9 +39,13 @@ Each case runs 3 times, and a case passes only if all 3 runs pass.
 - The pages are test fixtures, never deployed or sent anywhere. None of them collects personal information.
 - The API key never appears in code, chat or logs.
 
-## Known exception
+## Dependencies
 
-`npm audit` reports high-severity advisories in packages that promptfoo depends on (`braces`, `node-forge`, `basic-ftp` and others). Two have no fixed version yet. They affect the test tool only, not the website, and none of the affected features (FTP, proxy auto-config, Java keystores, file watching) is used here. The site's own dependencies are audited separately on every change.
+The test tool's dependencies are not shipped with the website; the site's own dependencies are audited separately on every change.
+
+In November 2026 promptfoo was updated to 0.125.1 and the safe automatic fixes were applied. Four packages that promptfoo itself pins still had known issues: `@hono/node-server`, `basic-ftp`, `glob` and `minimatch`. The `overrides` block in `package.json` tells npm to install a patched version of each instead of the one promptfoo asks for. With those in place `npm audit` reports no findings, and the free dry run gives the same result as before for every case.
+
+When promptfoo next updates, try removing the `overrides` block: if `npm audit` is still clean without it, it is no longer needed.
 
 ## Results
 
