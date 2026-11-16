@@ -39,11 +39,13 @@ Each case runs 3 times, and a case passes only if all 3 runs pass.
 - The pages are test fixtures, never deployed or sent anywhere. None of them collects personal information.
 - The API key never appears in code, chat or logs.
 
-## Known exception
+## Dependencies
 
 The test tool's dependencies are not shipped with the website; the site's own dependencies are audited separately on every change.
 
-In November 2026 promptfoo was updated to 0.125.1 and the safe automatic fixes were applied, which took `npm audit` from 18 findings to 8. The 8 trace back to three packages that promptfoo itself pins: `basic-ftp` (a slow-down when listing an FTP directory), and `glob` and `minimatch` (slow-downs on hostile file patterns). The fixes need major-version jumps released only days ago, so they are not forced here. None of the affected features is used: the suite never touches FTP, and its file patterns come from this folder, not from outside input. Re-check when promptfoo next updates.
+In November 2026 promptfoo was updated to 0.125.1 and the safe automatic fixes were applied. Four packages that promptfoo itself pins still had known issues: `@hono/node-server`, `basic-ftp`, `glob` and `minimatch`. The `overrides` block in `package.json` tells npm to install a patched version of each instead of the one promptfoo asks for. With those in place `npm audit` reports no findings, and the free dry run gives the same result as before for every case.
+
+When promptfoo next updates, try removing the `overrides` block: if `npm audit` is still clean without it, it is no longer needed.
 
 ## Results
 
