@@ -45,3 +45,13 @@ test('report links go to the Tally form and carry the listing name safely', asyn
   const url = new URL(reportUrlFor('Trillium Arts "Miss Sarah" Fellowship & more'));
   assert.equal(url.searchParams.get('listing'), 'Trillium Arts "Miss Sarah" Fellowship & more');
 });
+
+test('every submission guide link passes the page safety check', async () => {
+  // The guide's free-tool links live in the page's source, so read them from there.
+  const source = await readFile(new URL('../src/prepare.tsx', import.meta.url), 'utf8');
+  const links = [...source.matchAll(/link: '([^']+)'/g)].map((match) => match[1]);
+  assert.ok(links.length > 0, 'the guide should list at least one tool');
+  for (const link of links) {
+    assert.ok(safeOfficialUrl(link), `the guide has a link the page would refuse: ${link}`);
+  }
+});

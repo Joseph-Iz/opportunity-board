@@ -48,8 +48,41 @@ Each opportunity is one object in `src/listings.json`:
 | `verified` | The date the official page was last checked, `YYYY-MM-DD` |
 | `note` | One plain sentence about the opportunity |
 | `disclaimer` | Optional. A short caveat shown on the card when a listing is legitimate but worth knowing more about, such as who runs it |
+| `pays` | Optional. One sentence on whether and what the call pays contributors, shown in the listing's details. Add it only when the official page states it |
+| `aiPolicy` | Optional. One sentence on what the call says about AI-assisted work, shown in the listing's details. Add it only when the official page states it |
 
 Run `npm test` after editing.
+
+## The site's three pages
+
+The site is one static page with no server, so the part of the address after `#` picks what shows:
+
+- **The board** (`/`): the national list described above.
+- **Campus edition preview** (`/#campus`): a demonstration of Callboard for a university department, using the University of Utah. It shows campus and Utah opportunities beside the national board, a six-month deadline calendar, and a plain "first step" on each campus call. It is built from public official pages, and the page says it is not affiliated with or endorsed by the university.
+- **Submission guide** (`/#prepare`): the basics of preparing a submission, plus signs that a call is not worth your time.
+
+### Campus entries
+
+Campus and Utah opportunities live in `src/campus-listings.json`, separate from the national list. Every field is required; use `""` when one does not apply.
+
+| Field | What it holds |
+| --- | --- |
+| `name` | Title |
+| `scope` | `campus` or `utah` (national listings are pulled in from `listings.json` automatically) |
+| `kind` | `scholarship`, `research funding`, `fellowship`, `grant`, `submission`, `contest`, or `conference` |
+| `status` | `open` (taking applications, with a dated deadline), `coming-up` (runs every year, next dates not posted), or `left-off` (checked and deliberately not listed, with the reason shown) |
+| `deadline` | `YYYY-MM-DD` when `open`; otherwise `""` |
+| `timing` | For `coming-up`: one or two sentences on what is known about the next round |
+| `award` | What is offered |
+| `eligibility` | Who can apply. For `left-off`, the rule that excludes students |
+| `firstStep` | The one thing to do first, such as finding a mentor or asking for a nomination |
+| `feeStated` | `true` only when the official page says in words that there is no fee. Otherwise `false`, and the card says "None listed on the official page" |
+| `link` | The official page, starting with `https://` |
+| `verified` | The date the official page was last checked |
+| `note` | One plain sentence about the opportunity |
+| `caveat` | Anything unclear or inconsistent on the official page, said plainly |
+
+`test/campus-listings.test.mjs` checks these entries the same way the national list is checked, including the 45-day verification rule for open entries.
 
 ## What the tests check
 
