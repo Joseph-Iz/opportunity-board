@@ -51,8 +51,11 @@ test('every listing includes all required fields in the expected format', () => 
       assert.equal(typeof listing[field], 'string', `Listing ${index + 1} needs a text "${field}"`);
     }
     assert.ok(isRealCalendarDate(listing.verified), `Listing ${index + 1} has an invalid verified date`);
-    if (Object.hasOwn(listing, 'disclaimer')) {
-      assert.ok(typeof listing.disclaimer === 'string' && listing.disclaimer.trim().length > 0, `Listing ${index + 1} has an empty disclaimer`);
+    // Optional text fields: when one is present it must say something.
+    for (const field of ['disclaimer', 'pays', 'aiPolicy']) {
+      if (Object.hasOwn(listing, field)) {
+        assert.ok(typeof listing[field] === 'string' && listing[field].trim().length > 0, `Listing ${index + 1} has an empty ${field}`);
+      }
     }
   }
 });

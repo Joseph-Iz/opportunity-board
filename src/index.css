@@ -734,3 +734,134 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
 /* Report links: present but quiet, so they're easy to find without competing with the listings. */
 .footer-report, .report-link { color: inherit; text-decoration: underline; text-underline-offset: 3px; font-weight: 600; }
 .footer-report:hover, .report-link:hover { color: var(--coral); }
+
+/* ---------- Section navigation (shared by all three pages) ---------- */
+.section-nav { display: flex; flex-wrap: wrap; gap: 6px; padding: 12px 0 4px; }
+.section-nav a {
+  display: inline-flex; align-items: center; gap: 7px; min-height: 38px; padding: 0 14px;
+  border: 1px solid transparent; border-radius: 999px; color: var(--muted);
+  font: 700 14px var(--font-body); text-decoration: none;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+.section-nav a:hover { color: var(--ink); background: var(--paper-deep); }
+.section-nav a.is-current { color: var(--paper); background: var(--ink); }
+.nav-pill { padding: 2px 7px; border-radius: 999px; background: var(--sun); color: #3a2c05; font-size: 11px; font-weight: 800; letter-spacing: .02em; }
+
+/* ---------- Campus edition preview ---------- */
+/* The hero is a deep "after-hours noticeboard" panel in both themes, so the campus edition
+   reads as its own, richer product while keeping Callboard's type and accent colors. */
+.campus-hero {
+  --hero-bg: #1f2a44; --hero-ink: #fbf3de; --hero-soft: #c9d0e4; --hero-line: #3b4868; --hero-tile: #2a3757;
+  display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 28px; align-items: end;
+  margin: 14px 0 0; padding: 38px 36px; border-radius: 26px 22px 28px 20px;
+  background-color: var(--hero-bg);
+  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, .09) 1px, transparent 0);
+  background-size: 18px 18px;
+  color: var(--hero-ink); box-shadow: 0 8px 0 rgba(31, 42, 68, .22);
+}
+.dark .campus-hero { --hero-bg: #161d31; --hero-tile: #212b47; box-shadow: 0 8px 0 rgba(0, 0, 0, .3); }
+.campus-eyebrow { display: flex; align-items: center; gap: 9px; margin: 0 0 12px; color: var(--hero-soft); font: 700 14px var(--font-body); letter-spacing: .04em; text-transform: uppercase; }
+.campus-eyebrow span { padding: 3px 9px; border-radius: 999px; background: #f5bb39; color: #3a2c05; font-size: 12px; letter-spacing: .02em; }
+.campus-hero h1 { margin: 0; font: 800 clamp(34px, 5.2vw, 60px)/.98 var(--font-display); letter-spacing: -.045em; text-wrap: balance; }
+.campus-lede { max-width: 58ch; margin: 16px 0 0; color: var(--hero-ink); font-size: 16px; line-height: 1.55; }
+.campus-disclaimer { display: flex; align-items: flex-start; gap: 8px; max-width: 58ch; margin: 16px 0 0; padding-top: 14px; border-top: 1px dashed var(--hero-line); color: var(--hero-soft); font-size: 14px; line-height: 1.45; }
+.campus-disclaimer svg { flex: none; margin-top: 2px; }
+.campus-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0; }
+.campus-stats div { display: flex; flex-direction: column-reverse; justify-content: flex-end; gap: 4px; min-width: 0; padding: 14px 16px; border: 1px solid var(--hero-line); border-radius: 16px; background: var(--hero-tile); }
+.campus-stats dt { color: var(--hero-soft); font-size: 13px; font-weight: 600; line-height: 1.3; }
+.campus-stats dd { margin: 0; font: 800 38px/1 var(--font-display); letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+.campus-stats dd.campus-stat-date { font-size: 21px; line-height: 1.3; letter-spacing: -.02em; }
+
+.campus-heading { margin-bottom: 14px; }
+.campus-heading h2 { margin: 0; font: 800 clamp(24px, 2.8vw, 32px)/1.05 var(--font-display); letter-spacing: -.05em; }
+.campus-heading p { max-width: 68ch; margin: 6px 0 0; color: var(--muted); font-size: 15px; line-height: 1.5; }
+.campus-calendar, .campus-open, .campus-coming, .campus-leftoff, .campus-adds { padding: 38px 0 0; }
+.campus-adds { padding-bottom: 46px; }
+
+.month-strip { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
+.month-column { min-width: 0; padding: 12px 12px 14px; border: 1px solid var(--line); border-top: 5px solid var(--indigo); border-radius: 14px; background: var(--card); }
+.month-column.is-empty { border-top-color: var(--line); background: transparent; }
+.month-column h3 { margin: 0 0 10px; font: 800 17px var(--font-display); letter-spacing: -.03em; }
+.month-column h3 span { color: var(--muted); font: 600 13px var(--font-body); letter-spacing: 0; }
+.month-column ul { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.month-item { display: grid; gap: 1px; padding-left: 9px; border-left: 3px solid var(--line); }
+.month-item.scope-campus { border-left-color: var(--coral); }
+.month-item.scope-utah { border-left-color: var(--mint); }
+.month-item.scope-national { border-left-color: var(--sky); }
+.month-day { font: 800 14px var(--font-display); font-variant-numeric: tabular-nums; }
+.month-name { font-size: 13px; line-height: 1.3; overflow-wrap: anywhere; }
+.month-scope { color: var(--muted); font-size: 12px; font-weight: 700; }
+.month-empty { margin: 0; color: var(--muted); font-size: 13px; }
+.calendar-later { margin: 10px 0 0; color: var(--muted); font-size: 14px; }
+
+.campus-scope-row { margin-bottom: 16px; }
+.chip-count { margin-left: 7px; opacity: .75; font-variant-numeric: tabular-nums; }
+.campus-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.campus-card { min-width: 0; display: flex; flex-direction: column; gap: 10px; padding: 18px 20px 14px; border: 1px solid var(--line); border-top: 5px solid var(--sky); border-radius: 16px; background: var(--card); box-shadow: 0 2px 0 rgba(77, 63, 42, .07); }
+.campus-card.scope-campus { border-top-color: var(--coral); }
+.campus-card.scope-utah { border-top-color: var(--mint); }
+.campus-card-top { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; }
+.scope-badge { display: inline-flex; align-items: center; min-height: 23px; padding: 0 9px; border-radius: 999px; font-size: 12px; font-weight: 800; }
+.scope-badge.scope-campus { background: #f6d9ce; color: #713d2e; }
+.scope-badge.scope-utah { background: #d8e9da; color: #315741; }
+.scope-badge.scope-national { background: #d8e7ef; color: #31536a; }
+.dark .scope-badge.scope-campus { background: #70493d; color: #fff0e8; }
+.dark .scope-badge.scope-utah { background: #3c5d49; color: #e9ffed; }
+.dark .scope-badge.scope-national { background: #3d5868; color: #e6f6ff; }
+.campus-card h3 { margin: 0; font: 700 20px/1.2 var(--font-display); letter-spacing: -.04em; }
+.campus-note { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
+.campus-facts { display: grid; gap: 9px; margin: 0; padding: 12px 0 0; border-top: 1px dashed var(--line); }
+.campus-facts div { display: grid; grid-template-columns: 128px minmax(0, 1fr); gap: 10px; }
+.campus-facts dt { display: flex; align-items: flex-start; gap: 6px; color: var(--muted); font-size: 13px; font-weight: 700; line-height: 1.45; }
+.campus-facts dt svg { flex: none; margin-top: 2px; }
+.campus-facts dd { margin: 0; font-size: 14px; line-height: 1.45; font-weight: 600; }
+.first-step { display: flex; align-items: flex-start; gap: 9px; margin: 0; padding: 10px 12px; border-radius: 12px; background: var(--paper-deep); font-size: 14px; line-height: 1.45; }
+.first-step svg { flex: none; margin-top: 2px; color: var(--coral); }
+.campus-fee { margin: 0; color: var(--muted); font-size: 13px; }
+.campus-card-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-top: auto; padding-top: 10px; border-top: 1px dashed var(--line); }
+.campus-none { margin: 0; padding: 22px; border: 1px dashed var(--line); border-radius: 16px; color: var(--muted); font-size: 14px; }
+
+.leftoff-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.leftoff-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px 20px; padding: 14px 18px; border: 1px dashed var(--line); border-radius: 14px; }
+.leftoff-list strong { font: 700 16px var(--font-display); letter-spacing: -.03em; }
+.leftoff-award { color: var(--muted); font-size: 13px; font-weight: 600; }
+.leftoff-list p { margin: 4px 0 0; font-size: 14px; line-height: 1.45; }
+.leftoff-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+
+.adds-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.adds-card { padding: 16px 18px; border: 1px solid var(--line); border-radius: 15px; background: var(--card); }
+.adds-card strong { display: block; font: 700 16px/1.25 var(--font-display); letter-spacing: -.03em; }
+.adds-card p { margin: 6px 0 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
+
+/* ---------- Submission guide ---------- */
+.guide { padding: 26px 0 46px; }
+.guide-head h1 { margin: 0; font: 800 clamp(30px, 4.4vw, 46px)/1.02 var(--font-display); letter-spacing: -.05em; }
+.guide-head p { max-width: 64ch; margin: 12px 0 0; color: var(--muted); font-size: 16px; line-height: 1.55; }
+.guide-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 24px; }
+.guide-card { min-width: 0; padding: 18px 20px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); }
+.guide-card h2, .guide-tools h2 { margin: 0 0 10px; font: 700 20px/1.2 var(--font-display); letter-spacing: -.04em; }
+.guide-card ul, .guide-tools ul { display: grid; gap: 8px; margin: 0; padding-left: 20px; font-size: 15px; line-height: 1.5; }
+.guide-card p { margin: 12px 0 0; font-size: 14px; }
+.guide-card-warning { border-color: var(--coral); border-style: dashed; }
+.guide-tools { margin-top: 26px; }
+.guide-tools li span { color: var(--muted); }
+
+@media (max-width: 1000px) {
+  .month-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 900px) {
+  .campus-hero { grid-template-columns: minmax(0, 1fr); padding: 30px 26px; }
+  .campus-grid, .guide-grid { grid-template-columns: minmax(0, 1fr); }
+  .adds-grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 650px) {
+  .campus-hero { padding: 24px 18px; border-radius: 20px; }
+  .campus-stats dd.campus-stat-date { font-size: 17px; }
+  .month-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .campus-facts div { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .leftoff-list li { grid-template-columns: minmax(0, 1fr); }
+  .section-nav a { padding: 0 11px; font-size: 13px; }
+}
+/* The base reset removes list bullets and makes icons block-level; the guide wants both back. */
+.guide-card ul, .guide-tools ul { list-style: disc; }
+.guide-tools a svg { display: inline; vertical-align: -2px; }

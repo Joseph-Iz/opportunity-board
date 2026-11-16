@@ -8,14 +8,15 @@ import {
   Check,
   ChevronDown,
   Info,
-  Moon,
   Share2,
   SlidersHorizontal,
-  Sun,
   X,
 } from 'lucide-react';
 import listings from './listings.json';
 import { filterDisciplineLabels, filterTypeLabels, isDeadlineOpen, isRecentlyClosed, RECENTLY_CLOSED_DAYS, reportUrlFor, safeOfficialUrl } from './listing-rules';
+import { CampusEdition } from './campus';
+import { PrepareGuide } from './prepare';
+import { type ChromeProps, Masthead, OfficialLink, SiteFooter, useTheme, useView } from './site-chrome';
 
 type Listing = (typeof listings)[number];
 
@@ -75,6 +76,13 @@ async function copyTextToClipboard(text: string) {
 const disclaimerFor = (item: Listing): string | null =>
   'disclaimer' in item && typeof item.disclaimer === 'string' && item.disclaimer.trim() ? item.disclaimer : null;
 
+// Two more optional facts, shown in a listing's details only when a person has verified them on
+// the official page: whether the call pays, and what it says about AI-assisted work.
+const optionalText = (item: Listing, field: 'pays' | 'aiPolicy'): string | null => {
+  const value = (item as Record<string, unknown>)[field];
+  return typeof value === 'string' && value.trim() ? value : null;
+};
+
 function ListingDisclaimer({ item }: { item: Listing }) {
   const disclaimer = disclaimerFor(item);
   if (!disclaimer) return null;
@@ -123,37 +131,13 @@ const edgeStyleFor = (item: Listing) => ({
   '--edge-colors': item.discipline.map((discipline) => disciplineAccents[discipline]).join(', '),
 }) as CSSProperties;
 
-function Home() {
+function Home({ chrome }: { chrome: ChromeProps }) {
   const [activeType, setActiveType] = useState('All');
   const [activeDiscipline, setActiveDiscipline] = useState('All');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [showSaved, setShowSaved] = useState(false);
   const [savedListings, setSavedListings] = useState<Set<string>>(readSavedListings);
   const [shareStatus, setShareStatus] = useState<ShareStatus>(null);
-  const [darkMode, setDarkMode] = useState(() => {
-    // A visitor's own choice wins; until they make one, follow their device's light/dark setting.
-    try {
-      const stored = localStorage.getItem('callboard-theme');
-      if (stored === 'dark' || stored === 'light') return stored === 'dark';
-    } catch {
-      // Storage is blocked; fall through to the device setting.
-    }
-    return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
-  });
-
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', darkMode);
-  }, [darkMode]);
-
-  const toggleTheme = () => {
-    const next = !darkMode;
-    setDarkMode(next);
-    try {
-      localStorage.setItem('callboard-theme', next ? 'dark' : 'light');
-    } catch {
-      // Keep the selected theme for this visit if storage is unavailable.
-    }
-  };
 
   useEffect(() => {
     try {
@@ -243,30 +227,7 @@ function Home() {
       {/* Read aloud by screen readers when a link is copied; invisible on screen. */}
       <p className="sr-only" role="status" aria-live="polite">{shareAnnouncement}</p>
       <div className="page-shell">
-        <header className="masthead">
-          <a className="wordmark" href="/" aria-label="Callboard home">
-            <span className="wordmark-mark" aria-hidden="true">c<span>.</span></span>
-            <span>Callboard</span>
-          </a>
-          <p className="header-promise">Good things for people who make things. Every call is free to apply and checked by a person.</p>
-          <div className="header-actions">
-            <span className="last-updated">Last updated <strong>{formatDate(latestVerified)}</strong></span>
-            <a className="header-info icon-button" href="#how-this-list-is-kept" aria-label="How this list is kept" title="How this list is kept">
-              <Info size={17} aria-hidden="true" />
-            </a>
-            <button
-              className="theme-toggle"
-              type="button"
-              onClick={toggleTheme}
-              aria-label={`Switch to ${darkMode ? 'light' : 'dark'} mode`}
-              aria-pressed={darkMode}
-              data-testid="button-theme-toggle"
-            >
-              {darkMode ? <Sun size={18} /> : <Moon size={18} />}
-              <span>{darkMode ? 'Light' : 'Dark'}</span>
-            </button>
-          </div>
-        </header>
+        <Masthead {...chrome} updated={latestVerified} />
 
         <section className="feature-section" aria-labelledby="feature-title">
           <div className="section-heading feature-heading">
@@ -394,14 +355,7 @@ function Home() {
 
         <TrustSection />
 
-        <footer className="site-footer">
-          <span className="footer-squiggle" aria-hidden="true">〰</span>
-          <p>
-            Always check the official page before submitting. Real opportunities never ask you to pay to be considered.{' '}
-            <a className="footer-report" href={reportUrlFor()} target="_blank" rel="noopener noreferrer">Spot a problem? Report a listing<span className="sr-only"> (opens in a new tab)</span></a>
-          </p>
-          <span className="footer-squiggle" aria-hidden="true">〰</span>
-        </footer>
+        <SiteFooter />
       </div>
     </main>
   );
@@ -515,19 +469,6 @@ function FeatureCard({ item, index, days, formatDate, isSaved, onToggleSaved, on
   );
 }
 
-function OfficialLink({ link, name, testId }: { link: string; name: string; testId: string }) {
-  const href = safeOfficialUrl(link);
-  // A link that fails the safety check is shown as unavailable instead of being rendered.
-  if (!href) {
-    return <span className="official-link official-link-unavailable" data-testid={testId}>Link unavailable</span>;
-  }
-  return (
-    <a className="official-link" href={href} target="_blank" rel="noopener noreferrer" data-testid={testId}>
-      Go to official page<span className="sr-only"> for {name} (opens in a new tab)</span> <ArrowUpRight size={16} aria-hidden="true" />
-    </a>
-  );
-}
-
 function ListingCard({ item, index, days, formatDate, isSaved, onToggleSaved, onCopyLink, copyStatus }: {
   item: Listing;
   index: number;
@@ -581,6 +522,8 @@ function ListingCard({ item, index, days, formatDate, isSaved, onToggleSaved, on
             <p>{item.feeCondition || (item.fee === 0 ? 'No fee' : `$${item.fee}`)}</p>
           </div>
           <div><span>About this call</span><p>{item.note}</p></div>
+          {optionalText(item, 'pays') && <div data-testid="detail-pays"><span>Pay</span><p>{optionalText(item, 'pays')}</p></div>}
+          {optionalText(item, 'aiPolicy') && <div data-testid="detail-ai-policy"><span>AI policy</span><p>{optionalText(item, 'aiPolicy')}</p></div>}
           <div>
             <span>Something wrong?</span>
             <p><a className="report-link" href={reportUrlFor(item.name)} target="_blank" rel="noopener noreferrer">Report this listing<span className="sr-only">: {item.name} (opens in a new tab)</span></a></p>
@@ -646,5 +589,15 @@ function TrustSection() {
   );
 }
 
-// The site is a single page, so it needs no router; main.tsx wraps it in an error boundary.
-export default Home;
+// The site has three pages (the board, the campus edition preview and the submission guide) and
+// no server, so the address after "#" picks which one shows. main.tsx wraps it in an error boundary.
+function App() {
+  const view = useView();
+  const theme = useTheme();
+  const chrome: ChromeProps = { view, ...theme };
+  if (view === 'campus') return <CampusEdition chrome={chrome} />;
+  if (view === 'prepare') return <PrepareGuide chrome={chrome} />;
+  return <Home chrome={chrome} />;
+}
+
+export default App;
