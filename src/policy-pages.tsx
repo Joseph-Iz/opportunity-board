@@ -5,9 +5,9 @@ import { type ChromeProps, Masthead, SiteFooter } from './site-chrome';
 // Two plain text pages: the privacy policy (#privacy) and how to use Callboard inside Claude
 // (#claude). Claude's connector directory asks for both before it will list a connector.
 
-// The public address for questions about Callboard. Leave it empty until there is one: the
+// The public address for questions about Callboard. If it is ever left empty, the
 // pages then point to the anonymous contact form instead of showing a broken address.
-export const supportEmail = '';
+export const supportEmail = 'joeizambus@gmail.com';
 
 export const connectorUrl = 'https://callboard.smythbook.com/mcp';
 
