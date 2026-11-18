@@ -5,17 +5,25 @@ import { reportUrlFor, safeOfficialUrl } from './listing-rules';
 // The parts every page of the site shares: which page is showing, the light/dark setting,
 // the header, the footer and the checked "official page" link.
 
-export type View = 'board' | 'campus' | 'prepare';
+export type View = 'board' | 'campus' | 'prepare' | 'privacy' | 'claude';
 
 // The site has no server-side pages, so the part of the address after "#" picks the page.
 // Anything else (such as #how-this-list-is-kept) is a jump link within the main board.
-const viewFromHash = (hash: string): View =>
-  hash === '#campus' ? 'campus' : hash === '#prepare' ? 'prepare' : 'board';
+const hashViews: Record<string, View> = {
+  '#campus': 'campus',
+  '#prepare': 'prepare',
+  '#privacy': 'privacy',
+  '#claude': 'claude',
+};
+
+const viewFromHash = (hash: string): View => hashViews[hash] ?? 'board';
 
 const pageTitles: Record<View, string> = {
   board: 'Callboard: free, verified calls for writers and artists',
   campus: 'Campus edition preview · Callboard',
   prepare: 'Preparing your submission · Callboard',
+  privacy: 'Privacy · Callboard',
+  claude: 'Use Callboard in Claude · Callboard',
 };
 
 export function useView(): View {
@@ -30,7 +38,7 @@ export function useView(): View {
   useEffect(() => {
     document.title = pageTitles[view];
     const hash = window.location.hash;
-    if (['', '#board', '#campus', '#prepare'].includes(hash)) {
+    if (['', '#board', '#campus', '#prepare', '#privacy', '#claude'].includes(hash)) {
       window.scrollTo(0, 0);
     } else {
       // A jump link that also switched pages: the target only exists now, so scroll to it here.
@@ -134,6 +142,10 @@ export function SiteFooter() {
       <p>
         Always check the official page before submitting. Real opportunities never ask you to pay to be considered.{' '}
         <a className="footer-report" href={reportUrlFor()} target="_blank" rel="noopener noreferrer">Spot a problem? Report a listing<span className="sr-only"> (opens in a new tab)</span></a>
+        <br />
+        <a className="footer-report" href="#claude">Use Callboard in Claude</a>
+        <span aria-hidden="true"> · </span>
+        <a className="footer-report" href="#privacy">Privacy</a>
       </p>
       <span className="footer-squiggle" aria-hidden="true">〰</span>
     </footer>

@@ -53,13 +53,33 @@ Each opportunity is one object in `src/listings.json`:
 
 Run `npm test` after editing.
 
-## The site's three pages
+## The site's pages
 
-The site is one static page with no server, so the part of the address after `#` picks what shows:
+The site is one static page, so the part of the address after `#` picks what shows:
 
 - **The board** (`/`): the national list described above.
 - **Campus edition preview** (`/#campus`): a demonstration of Callboard for a university department, using the University of Utah. It shows campus and Utah opportunities beside the national board, a six-month deadline calendar, and a plain "first step" on each campus call. It is built from public official pages, and the page says it is not affiliated with or endorsed by the university.
 - **Submission guide** (`/#prepare`): the basics of preparing a submission, plus signs that a call is not worth your time.
+- **Use Callboard in Claude** (`/#claude`): how to add the Callboard connector to Claude, described below.
+- **Privacy** (`/#privacy`): the privacy policy for the site, the report form and the connector. The contact shown there is set by `supportEmail` in `src/policy-pages.tsx`; while it is empty, the pages point to the contact form.
+
+## Callboard in Claude (the connector)
+
+Callboard also answers AI assistants directly, through a small read-only connector at `https://callboard.smythbook.com/mcp`. It uses MCP (Model Context Protocol), the open standard Claude uses for connectors. Anyone can add it in Claude under Customize → Connectors → Add custom connector, with no sign-in.
+
+It offers two tools, both marked read-only:
+
+- `search_listings`: finds open listings by words, type, discipline and deadline, soonest first. It can also return calls that closed in the last 90 days.
+- `get_listing`: one listing in full by its id, including fee details, pay and AI policy where stated, the verified date and the report link.
+
+How it is put together:
+
+- `src/mcp-server.ts` holds the connector. It reads the same `src/listings.json` as the website, so approving a listing updates both at once.
+- `functions/mcp.ts` is the only server code on the site. Cloudflare Pages runs it for `/mcp` alone; every other address is still the static site, so page views never count toward Cloudflare's free Functions allowance (100,000 requests a day).
+- It needs no sign-in, sets no cookies, keeps no record of searches, and passes on an official link only if it passes the same `safeOfficialUrl` check the page uses.
+- `test/mcp-server.test.mjs` sends it the messages Claude sends and checks the answers, including that every tool is marked read-only and that no two listings share an id.
+
+To try it locally: `npm run build`, then `npx wrangler pages dev dist` and point a client such as MCP Inspector at `http://localhost:8788/mcp`.
 
 ### Campus entries
 
@@ -110,6 +130,7 @@ The people this board serves are emerging artists, often early in their careers 
 | Injected or third-party scripts run on the page | A compromised dependency or a stray script tag tries to load code from elsewhere | A strict content security policy only allows scripts, styles, fonts and images from the site itself. |
 | A dependency is compromised | A malicious version of an npm package is published | Dependencies are few (about a dozen) and pinned in `package-lock.json`, resolved only from versions at least a week old. The GitHub check installs exactly those versions. |
 | Visitors are tracked | Third-party fonts, analytics or ads report who visits | No ads, analytics or accounts. Fonts are bundled with the site, so a visit makes no third-party requests. Saved listings stay in the visitor's own browser. |
+| The connector is used to change or pull data | Someone sends the `/mcp` address crafted requests | It has no write tools and no data beyond the public listings. Requests over 64 KB are refused, and it keeps no logs or sessions. |
 | The site is framed by a lookalike page | Another site embeds the board to borrow its credibility | Cloudflare Pages reads `public/_headers` and sends `frame-ancestors 'none'`, which blocks embedding (confirmed on the live site). |
 
 **Known limits.** Verification is only as current as its date: a call can change between checks, so each card links to the official page and the footer tells visitors to confirm there. The automated link check can't read a page the way a person does, so it flags problems for review rather than removing listings itself. The `<meta>` version of the security policy can't block framing; that protection depends on the host honoring `_headers`.

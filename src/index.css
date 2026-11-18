@@ -865,3 +865,6 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
 /* The base reset removes list bullets and makes icons block-level; the guide wants both back. */
 .guide-card ul, .guide-tools ul { list-style: disc; }
 .guide-tools a svg { display: inline; vertical-align: -2px; }
+
+/* The connector address on the "Use Callboard in Claude" page: shown whole so it can be copied. */
+.connector-url { display: block; margin-top: 6px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper, transparent); font: 600 14px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; overflow-wrap: anywhere; user-select: all; }
