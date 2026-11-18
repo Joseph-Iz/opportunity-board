@@ -146,6 +146,8 @@ export function SiteFooter() {
         <a className="footer-report" href="#claude">Use Callboard in Claude</a>
         <span aria-hidden="true"> · </span>
         <a className="footer-report" href="#privacy">Privacy</a>
+        <br />
+        Callboard is run by SmythBook LLC.
       </p>
       <span className="footer-squiggle" aria-hidden="true">〰</span>
     </footer>

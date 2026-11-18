@@ -57,8 +57,8 @@ export function PrivacyPage({ chrome }: { chrome: ChromeProps }) {
             <section className="guide-card">
               <h2>Reporting a listing</h2>
               <ul>
-                <li>The report form is run by Tally and is anonymous: you don't need to give a name or contact details.</li>
-                <li>What you write is read by the person who keeps the board, only to check and fix listings, and is kept only as long as that takes.</li>
+                <li>The report form is run by Tally and is anonymous. It asks only which listing, what's wrong and any details you want to add. It never asks for your name or contact details.</li>
+                <li>Reports are stored in Callboard's Tally account and read only by the person who keeps the board, to check and fix listings.</li>
                 <li>Tally's own privacy policy covers how it stores the form.</li>
               </ul>
             </section>
