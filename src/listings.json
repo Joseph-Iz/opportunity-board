@@ -376,5 +376,243 @@
     "link": "https://www.smokelong.com/?p=43102",
     "verified": "2026-11-16",
     "note": "For writers of flash fiction and flash nonfiction. Closes December 15 at midnight New York time."
+  },
+  {
+    "name": "Pulitzer Center Global Reporting Grants",
+    "type": "grant",
+    "discipline": [
+      "Nonfiction",
+      "Photography"
+    ],
+    "deadline": "rolling",
+    "fee": 0,
+    "feeCondition": "",
+    "award": "Travel and reporting costs for a reporting project. The center says most international travel awards are $5,000 to $10,000.",
+    "eligibility": "Staff and freelance journalists in any country, including photographers, audio and video journalists and documentary filmmakers. Proposals should include letters of interest or commitment from outlets that plan to publish the work.",
+    "link": "https://pulitzercenter.org/grants-fellowships/opportunities-journalists/global-reporting-grants",
+    "verified": "2026-11-18",
+    "note": "There is no deadline: grants are awarded on a rolling basis, and editors reply within two or three weeks. The grant covers reporting costs, not pay; the center expects outlets to pay journalists for their work."
+  },
+  {
+    "name": "The Sun (photography)",
+    "type": "submission",
+    "discipline": [
+      "Photography"
+    ],
+    "deadline": "rolling",
+    "fee": 0,
+    "feeCondition": "Photography submissions are free. The Sun's writing submissions charge $2.50.",
+    "award": "Payment on publication; the amount is not stated on the submissions page.",
+    "eligibility": "Black-and-white photographs, up to 30 at a time, sent through the magazine's online form. Email submissions are not accepted.",
+    "link": "https://thesunmagazine.org/submit/photography",
+    "verified": "2026-11-18",
+    "note": "The Sun publishes black-and-white photography and tries to reply to each submission within a month."
+  },
+  {
+    "name": "The Aftermath Project Post-Conflict Grant 2026",
+    "type": "grant",
+    "discipline": [
+      "Photography"
+    ],
+    "deadline": "2026-12-01",
+    "fee": 0,
+    "feeCondition": "",
+    "award": "$25,000 grant; four finalists are also named.",
+    "eligibility": "Working photographers anywhere in the world with a project about the aftermath of conflict. Full-time students are not eligible.",
+    "link": "https://theaftermathproject.org/application/2026-post-conflict-grant-application",
+    "verified": "2026-11-18",
+    "note": "Proposals go by email with a file-sharing link and close at midnight Pacific time on December 1. No budget is needed."
+  },
+  {
+    "name": "Surel's Place Artist Residency",
+    "type": "residency",
+    "discipline": [
+      "Poetry",
+      "Nonfiction",
+      "Visual art"
+    ],
+    "deadline": "2027-03-01",
+    "fee": 0,
+    "feeCondition": "",
+    "award": "About a month living and working in a private home in Boise, Idaho.",
+    "eligibility": "Artists 25 and older working in visual, literary or other media. Fiction is not being considered in this cycle.",
+    "link": "https://surelsplace.org/application/",
+    "verified": "2026-11-18",
+    "note": "The March 1 deadline is for residencies from July to December 2027; the next deadline, September 1, is for January to June 2028. The application page does not mention a stipend."
+  },
+  {
+    "name": "Wergle Flomp Humor Poetry Contest",
+    "type": "contest",
+    "discipline": [
+      "Poetry"
+    ],
+    "deadline": "2027-04-01",
+    "fee": 0,
+    "feeCondition": "",
+    "award": "$2,000 first prize; ten honorable mentions of $200 each.",
+    "eligibility": "One humor poem of up to 250 lines, in English. Open to poets in most countries, with no age limit.",
+    "link": "https://winningwriters.com/our-contests/wergle-flomp-humor-poetry-contest-free",
+    "verified": "2026-11-18",
+    "note": "The page says \"No fee to enter.\" Winners give a nonexclusive licence to publish the poem online and keep all other rights.",
+    "aiPolicy": "Entries must be written without AI."
+  },
+  {
+    "name": "Treehouse Climate Action Poem Prize 2027 (Academy of American Poets)",
+    "type": "contest",
+    "discipline": [
+      "Poetry"
+    ],
+    "deadline": "2026-12-14",
+    "fee": 0,
+    "feeCondition": "",
+    "award": "$1,000, $750, $500 and $250 prizes; all four winning poems appear in Poem-a-Day.",
+    "eligibility": "US citizens, people who have lived in the US for the ten years before the deadline, and DACA or TPS holders. One previously unpublished poem.",
+    "link": "https://poets.org/treehouse-climate-action-poem-prize-guidelines",
+    "verified": "2026-11-18",
+    "note": "A prize for poems about climate change. The guidelines say \"There is no entry fee.\""
+  },
+  {
+    "name": "Jim Baen Memorial Short Story Award",
+    "type": "contest",
+    "discipline": [
+      "Fiction"
+    ],
+    "deadline": "2027-01-31",
+    "fee": 0,
+    "feeCondition": "",
+    "award": "Grand prize: publication on the Baen Books website at its normal rate, currently 8 cents a word. Second and third places get conference entry and National Space Society membership.",
+    "eligibility": "Original, unpublished stories in English of up to 8,000 words about near-future human space exploration, from writers in any country.",
+    "link": "https://www.baen.com/contest-jbmssa",
+    "verified": "2026-11-18",
+    "note": "Entries go by email as an RTF file and close at 12:01 AM Pacific on February 1, 2027. The page says \"No entry fee.\"",
+    "aiPolicy": "AI-generated stories are disqualified."
+  },
+  {
+    "name": "Philip Roth Residence in Creative Writing (Bucknell University)",
+    "type": "residency",
+    "discipline": [
+      "Poetry",
+      "Fiction",
+      "Nonfiction"
+    ],
+    "deadline": "2027-02-01",
+    "fee": 0,
+    "feeCondition": "",
+    "award": "$5,000 stipend and housing in Bucknell's Poets' Cottage for up to four months, in fall 2027 or spring 2028.",
+    "eligibility": "Writers working on a first or second book in any literary genre.",
+    "link": "https://www.bucknell.edu/rothresidence",
+    "verified": "2026-11-18",
+    "note": "A residency at Bucknell University in Pennsylvania. No fee is mentioned on the residency page."
+  },
+  {
+    "name": "The Leah Playwriting Prize 2027",
+    "type": "contest",
+    "discipline": [
+      "Playwriting"
+    ],
+    "deadline": "2026-12-15",
+    "fee": 0,
+    "feeCondition": "",
+    "award": "$5,000, plus a public reading and summer workshop at Vassar College's Powerhouse Theater in 2027.",
+    "eligibility": "Emerging women, trans and non-binary playwrights anywhere in the world, with one completed full-length play in English.",
+    "link": "https://leahryanfund.org/apply-the-leah/",
+    "verified": "2026-11-18",
+    "note": "Closes December 15 or as soon as 400 applications arrive, whichever comes first. The page says \"There is no fee to apply.\""
+  },
+  {
+    "name": "Jerome Fellowship 2027–29 (Playwrights' Center)",
+    "type": "fellowship",
+    "discipline": [
+      "Playwriting"
+    ],
+    "deadline": "2026-12-03",
+    "fee": 0,
+    "feeCondition": "",
+    "award": "$25,000 a year for two years as a part-time employee with health insurance, plus $3,000 a year for play development.",
+    "eligibility": "Playwrights over 18 with the legal right to work in the US and no more than two professionally produced plays. Fellows must live in Minnesota from July 2027 to June 2029; housing and travel are not provided.",
+    "link": "https://pwcenter.org/programs/jerome-fellowships/",
+    "verified": "2026-11-18",
+    "note": "Closes December 3 at 11:59 PM Central. One application now covers both the Jerome and Many Voices fellowships."
+  },
+  {
+    "name": "Many Voices Fellowship 2027–29 (Playwrights' Center)",
+    "type": "fellowship",
+    "discipline": [
+      "Playwriting"
+    ],
+    "deadline": "2026-12-03",
+    "fee": 0,
+    "feeCondition": "",
+    "award": "$25,000 a year for two years as a part-time employee with health insurance, plus $3,000 a year for play development.",
+    "eligibility": "Early-career Black playwrights, playwrights of color and Indigenous playwrights over 18, with the legal right to work in the US and no more than two professionally produced plays. Fellows must live in Minnesota from July 2027 to June 2029; housing and travel are not provided.",
+    "link": "https://pwcenter.org/programs/many-voices-program/",
+    "verified": "2026-11-18",
+    "note": "Closes December 3 at 11:59 PM Central. One application now covers both the Many Voices and Jerome fellowships."
+  },
+  {
+    "name": "The Drift",
+    "type": "submission",
+    "discipline": [
+      "Fiction",
+      "Poetry"
+    ],
+    "deadline": "rolling",
+    "fee": 0,
+    "feeCondition": "",
+    "award": "$500 to $1,000 per short story; $150 per poem.",
+    "eligibility": "Fiction and poetry sent by email following the magazine's guidelines; poets may submit no more than twice a year.",
+    "link": "https://thedriftmag.com/about",
+    "verified": "2026-11-18",
+    "note": "Submissions go by email with no stated reading period, and no fee is mentioned. Nonfiction writers send a pitch first.",
+    "aiPolicy": "Work written by AI is not accepted."
+  },
+  {
+    "name": "Clarkesworld Magazine",
+    "type": "submission",
+    "discipline": [
+      "Fiction",
+      "Nonfiction",
+      "Visual art"
+    ],
+    "deadline": "rolling",
+    "fee": 0,
+    "feeCondition": "",
+    "award": "14 cents a word for fiction; 10 cents a word for nonfiction; $450 for cover art.",
+    "eligibility": "Science fiction and fantasy stories of 1,000 to 22,000 words, in English, from writers anywhere. No simultaneous submissions and no horror.",
+    "link": "https://clarkesworldmagazine.com/submissions/",
+    "verified": "2026-11-18",
+    "note": "The submissions page says it is \"currently open\" for stories, nonfiction and art. Fiction buys first world electronic and print rights plus non-exclusive anthology rights.",
+    "aiPolicy": "Work written or made by AI is not accepted."
+  },
+  {
+    "name": "Foundation for Contemporary Arts Emergency Grants",
+    "type": "grant",
+    "discipline": [
+      "Poetry",
+      "Visual art"
+    ],
+    "deadline": "rolling",
+    "fee": 0,
+    "feeCondition": "",
+    "award": "$500 to $3,000 toward costs tied to a confirmed upcoming presentation of your work.",
+    "eligibility": "Individual artists living in the US or its territories, with a US tax ID and a confirmed exhibition or performance date. Students in degree programs are not eligible.",
+    "link": "https://www.foundationforcontemporaryarts.org/grants/emergency-grants/",
+    "verified": "2026-11-18",
+    "note": "Open year-round. Apply 8 to 10 weeks before the presentation date, and no earlier than 10 weeks."
+  },
+  {
+    "name": "The Orchard Project Episodic Lab 2027",
+    "type": "fellowship",
+    "discipline": [
+      "Screenwriting"
+    ],
+    "deadline": "2027-01-03",
+    "fee": 0,
+    "feeCondition": "",
+    "award": "A six-week virtual writers' room in late summer 2027 with script and pitch notes from industry professionals. No stipend is stated.",
+    "eligibility": "Anyone writing a TV pilot, with no age limit and no agent needed; most participants have shown creative work in public before. Takes part online from anywhere.",
+    "link": "https://orchardproject.com/op-episodic-lab/",
+    "verified": "2026-11-18",
+    "note": "Closes at 11:59 PM Eastern on January 3, 2027. The page says \"Apply for free by January 3.\""
   }
 ]
