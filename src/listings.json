@@ -234,12 +234,12 @@
     ],
     "deadline": "rolling",
     "fee": 0,
-    "feeCondition": "MQR Online is free. The print journal and its prizes charge fees.",
+    "feeCondition": "MQR Online is free. Its prizes charge entry fees.",
     "award": "$50 per published piece",
     "eligibility": "Pitches for essays, book reviews, arts and culture features and author interviews; selected pitches are invited to submit up to 3,000 words.",
     "link": "https://mqr.submittable.com/",
     "verified": "2026-11-16",
-    "note": "Online pitches are free year-round. The print journal and its prizes charge fees, so use the MQR Online category."
+    "note": "Online pitches are free year-round. The prizes charge entry fees, so use the MQR Online category."
   },
   {
     "name": "Barrelhouse: newsletter essays",
@@ -307,14 +307,14 @@
     "discipline": [
       "Playwriting"
     ],
-    "deadline": "2026-12-31",
+    "deadline": "2026-11-17",
     "fee": 0,
     "feeCondition": "",
     "award": "Consideration for the May \"Meet the Artist\" reading series and for mainstage production. Royalties are paid for readings and productions; amounts are not stated.",
     "eligibility": "One full-length comedy or drama per writer, on a contemporary topic, with a cast of eight or fewer. No musicals, period pieces, plays under 60 minutes, or AI-generated material.",
     "link": "https://vividstage.org/play-submissions",
     "verified": "2026-11-16",
-    "note": "Closes December 31 or as soon as 300 scripts arrive, so send early. Submit through the Google Form on the page, with your name and email on the script itself."
+    "note": "Closed early: by November 18, 2026 its page said the 300-script limit for this season had been reached. This season's window opened November 1."
   },
   {
     "name": "Sillerman First Book Prize for African Poets",
