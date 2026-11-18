@@ -16,6 +16,7 @@ import listings from './listings.json';
 import { filterDisciplineLabels, filterTypeLabels, isDeadlineOpen, isRecentlyClosed, RECENTLY_CLOSED_DAYS, reportUrlFor, safeOfficialUrl } from './listing-rules';
 import { CampusEdition } from './campus';
 import { PrepareGuide } from './prepare';
+import { ConnectorGuide, PrivacyPage } from './policy-pages';
 import { type ChromeProps, Masthead, OfficialLink, SiteFooter, useTheme, useView } from './site-chrome';
 
 type Listing = (typeof listings)[number];
@@ -589,14 +590,16 @@ function TrustSection() {
   );
 }
 
-// The site has three pages (the board, the campus edition preview and the submission guide) and
-// no server, so the address after "#" picks which one shows. main.tsx wraps it in an error boundary.
+// The site's pages (the board, the campus edition preview, the submission guide, the privacy
+// policy and the Claude connector guide) have no server, so the address after "#" picks which one shows. main.tsx wraps it in an error boundary.
 function App() {
   const view = useView();
   const theme = useTheme();
   const chrome: ChromeProps = { view, ...theme };
   if (view === 'campus') return <CampusEdition chrome={chrome} />;
   if (view === 'prepare') return <PrepareGuide chrome={chrome} />;
+  if (view === 'privacy') return <PrivacyPage chrome={chrome} />;
+  if (view === 'claude') return <ConnectorGuide chrome={chrome} />;
   return <Home chrome={chrome} />;
 }
 
