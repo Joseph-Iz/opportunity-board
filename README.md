@@ -61,7 +61,7 @@ The site is one static page, so the part of the address after `#` picks what sho
 - **Campus edition preview** (`/#campus`): a demonstration of Callboard for a university department, using the University of Utah. It shows campus and Utah opportunities beside the national board, a six-month deadline calendar, and a plain "first step" on each campus call. It is built from public official pages, and the page says it is not affiliated with or endorsed by the university.
 - **Submission guide** (`/#prepare`): the basics of preparing a submission, plus signs that a call is not worth your time.
 - **Use Callboard in Claude** (`/#claude`): how to add the Callboard connector to Claude, described below.
-- **Privacy** (`/#privacy`): the privacy policy for the site, the report form and the connector. The contact shown there is set by `supportEmail` in `src/policy-pages.tsx`; while it is empty, the pages point to the contact form.
+- **Privacy** (`/#privacy`): the privacy policy for the site, the report form and the connector. The contact shown there is set by `supportEmail` in `src/policy-pages.tsx` (if it is ever left empty, the pages point to the contact form instead).
 
 ## Callboard in Claude (the connector)
 
