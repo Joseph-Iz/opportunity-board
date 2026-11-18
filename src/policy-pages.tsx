@@ -15,10 +15,10 @@ const POLICY_UPDATED = 'November 18, 2026';
 
 function ContactLine() {
   if (supportEmail) {
-    return <>email <a className="report-link" href={`mailto:${supportEmail}`}>{supportEmail}</a></>;
+    return <>Email <a className="report-link" href={`mailto:${supportEmail}`}>{supportEmail}</a></>;
   }
   return (
-    <>use the <a className="report-link" href={reportUrlFor()} target="_blank" rel="noopener noreferrer">contact form<span className="sr-only"> (opens in a new tab)</span></a></>
+    <>Use the <a className="report-link" href={reportUrlFor()} target="_blank" rel="noopener noreferrer">contact form<span className="sr-only"> (opens in a new tab)</span></a></>
   );
 }
 
