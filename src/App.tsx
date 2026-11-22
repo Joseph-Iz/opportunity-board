@@ -17,7 +17,7 @@ import { filterDisciplineLabels, filterTypeLabels, isDeadlineOpen, isRecentlyClo
 import { CampusEdition } from './campus';
 import { PrepareGuide } from './prepare';
 import { ConnectorGuide, PrivacyPage } from './policy-pages';
-import { type ChromeProps, Masthead, OfficialLink, SiteFooter, useTheme, useView } from './site-chrome';
+import { type ChromeProps, Masthead, OfficialLink, ReportListingLink, SiteFooter, useTheme, useView } from './site-chrome';
 
 type Listing = (typeof listings)[number];
 
@@ -460,7 +460,10 @@ function FeatureCard({ item, index, days, formatDate, isSaved, onToggleSaved, on
       </div>
       <ListingDisclaimer item={item} />
       <div className="feature-foot">
-        <span className="verified"><Check size={14} /> Verified {formatShortDate(item.verified)}</span>
+        <span className="verified-line">
+          <span className="verified"><Check size={14} /> Verified {formatShortDate(item.verified)}</span>
+          <ReportListingLink name={item.name} testId={`link-feature-report-${index + 1}`} />
+        </span>
         <div className="feature-actions">
           <ListingActionButtons item={item} isSaved={isSaved} onToggleSaved={onToggleSaved} onCopyLink={onCopyLink} copyStatus={copyStatus} />
           <OfficialLink link={item.link} name={item.name} testId={`link-feature-official-${index + 1}`} />
@@ -505,7 +508,10 @@ function ListingCard({ item, index, days, formatDate, isSaved, onToggleSaved, on
             <strong>{item.award}</strong>
           </div>
         </div>
-        <span className="verified"><Check size={14} /> Verified {formatShortDate(item.verified)}</span>
+        <span className="verified-line">
+          <span className="verified"><Check size={14} /> Verified {formatShortDate(item.verified)}</span>
+          <ReportListingLink name={item.name} testId={`link-report-${index + 1}`} />
+        </span>
         <OfficialLink link={item.link} name={item.name} testId={`link-official-${index + 1}`} />
         <ListingActionButtons item={item} isSaved={isSaved} onToggleSaved={onToggleSaved} onCopyLink={onCopyLink} copyStatus={copyStatus} />
       </div>

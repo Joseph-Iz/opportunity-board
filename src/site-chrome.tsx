@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ArrowUpRight, Info, Moon, Sun } from 'lucide-react';
+import { ArrowUpRight, Flag, Info, Moon, Sun } from 'lucide-react';
 import { reportUrlFor, safeOfficialUrl } from './listing-rules';
 
 // The parts every page of the site shares: which page is showing, the light/dark setting,
@@ -101,6 +101,11 @@ export function Masthead({ view, darkMode, toggleTheme, updated }: ChromeProps &
         <p className="header-promise">Good things for people who make things. Every call is free to apply and checked by a person.</p>
         <div className="header-actions">
           <span className="last-updated">Last updated <strong>{formatLongDate(updated)}</strong></span>
+          <a className="header-report" href={reportUrlFor()} title="Report a problem with a listing" target="_blank" rel="noopener noreferrer" data-testid="link-header-report">
+            <Flag size={15} aria-hidden="true" />
+            <span>Report a problem</span>
+            <span className="sr-only"> with a listing (opens in a new tab)</span>
+          </a>
           <a className="header-info icon-button" href="#how-this-list-is-kept" aria-label="How this list is kept" title="How this list is kept">
             <Info size={17} aria-hidden="true" />
           </a>
@@ -151,6 +156,17 @@ export function SiteFooter() {
       </p>
       <span className="footer-squiggle" aria-hidden="true">〰</span>
     </footer>
+  );
+}
+
+// A small "Report" link that sits beside each listing's Verified stamp, so a visitor who spots
+// a problem never has to open the listing's details to find the form.
+export function ReportListingLink({ name, testId }: { name: string; testId: string }) {
+  return (
+    <a className="card-report" href={reportUrlFor(name)} target="_blank" rel="noopener noreferrer" data-testid={testId}>
+      <Flag size={12} aria-hidden="true" />
+      Report<span className="sr-only"> a problem with {name} (opens in a new tab)</span>
+    </a>
   );
 }
 

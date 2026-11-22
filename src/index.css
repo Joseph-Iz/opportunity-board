@@ -145,6 +145,26 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
 .card-icon-button[aria-pressed="true"] { color: var(--plum); background: var(--paper-deep); }
 .card-icon-button.is-copied { color: var(--mint); }
 .header-info { text-decoration: none; }
+.header-report {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--card);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.header-report:hover { color: var(--coral); }
+.header-report:focus-visible, .card-report:focus-visible { outline: 2px solid var(--mint); outline-offset: 2px; }
+.verified-line { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; }
+.card-report { display: inline-flex; align-items: center; gap: 3px; min-height: 24px; color: var(--muted); font-size: 12px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.card-report:hover { color: var(--coral); }
 .theme-toggle {
   min-height: 42px;
   display: inline-flex;
@@ -328,7 +348,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
 .fee-condition { margin-top: 4px; color: var(--muted); font-size: 13px; line-height: 1.45; }
 .feature-stickers .sticker-free { min-width: 42px; height: 20px; padding: 0 6px; font-size: 11px; }
 .feature-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 6px; margin-top: auto; border-top: 1px dashed var(--line); padding-top: 4px; }
-.feature-foot .verified { flex-basis: 100%; padding-top: 6px; }
+.feature-foot .verified-line { flex-basis: 100%; padding-top: 6px; }
 .feature-actions { width: 100%; justify-content: space-between; }
 .verified { white-space: nowrap; }
 .feature-foot .verified { color: var(--ink); font-size: 13px; font-weight: 600; }
@@ -631,6 +651,8 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
   .theme-toggle { min-height: 44px; width: 44px; padding: 0; border-radius: 13px; }
   .theme-toggle span { display: none; }
   .header-info { width: 44px; height: 44px; }
+  .header-report { min-height: 44px; width: 44px; padding: 0; justify-content: center; border-radius: 13px; }
+  .header-report > span:not(.sr-only) { display: none; }
   .feature-section { padding: 10px 0 18px; }
   .section-heading { margin-bottom: 8px; }
   .feature-heading h1 { font-size: 24px; }
