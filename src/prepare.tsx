@@ -1,5 +1,6 @@
 import { ArrowUpRight } from 'lucide-react';
 import listings from './listings.json';
+import { countReportClick } from './analytics';
 import { reportUrlFor, safeOfficialUrl } from './listing-rules';
 import { type ChromeProps, Masthead, SiteFooter } from './site-chrome';
 
@@ -121,7 +122,7 @@ export function PrepareGuide({ chrome }: { chrome: ChromeProps }) {
                 <li>An invitation that arrives by ad or direct message and pushes you to decide fast.</li>
                 <li>Terms that take all rights to your work forever.</li>
               </ul>
-              <p>Seen one of these on a listing here? <a className="report-link" href={reportUrlFor()} target="_blank" rel="noopener noreferrer">Report it<span className="sr-only"> (opens in a new tab)</span></a>.</p>
+              <p>Seen one of these on a listing here? <a className="report-link" href={reportUrlFor()} target="_blank" rel="noopener noreferrer" onClick={() => countReportClick('guide')}>Report it<span className="sr-only"> (opens in a new tab)</span></a>.</p>
             </section>
           </div>
 

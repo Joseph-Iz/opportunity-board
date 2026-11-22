@@ -17,6 +17,7 @@ import { filterDisciplineLabels, filterTypeLabels, isDeadlineOpen, isRecentlyClo
 import { CampusEdition } from './campus';
 import { PrepareGuide } from './prepare';
 import { ConnectorGuide, PrivacyPage } from './policy-pages';
+import { countFilter, countReportClick, countSave, countShare, countView } from './analytics';
 import { type ChromeProps, Masthead, OfficialLink, ReportListingLink, SiteFooter, useTheme, useView } from './site-chrome';
 
 type Listing = (typeof listings)[number];
@@ -195,6 +196,7 @@ function Home({ chrome }: { chrome: ChromeProps }) {
     setShowSaved(false);
   };
   const toggleSavedListing = (name: string) => {
+    if (!savedListings.has(name)) countSave(name);
     setSavedListings((current) => {
       const next = new Set(current);
       if (next.has(name)) next.delete(name);
@@ -208,6 +210,7 @@ function Home({ chrome }: { chrome: ChromeProps }) {
       if (!href) throw new Error('This listing has no safe official link to copy.');
       await copyTextToClipboard(href);
       setShareStatus({ name: item.name, status: 'copied' });
+      countShare(item.name);
     } catch (error) {
       console.warn('Could not copy the official opportunity link.', error);
       setShareStatus({ name: item.name, status: 'error' });
@@ -277,8 +280,8 @@ function Home({ chrome }: { chrome: ChromeProps }) {
             {activeFilterCount > 0 && <span className="filter-count-badge" aria-label={`${activeFilterCount} active filters`}>{activeFilterCount}</span>}
           </button>
           <div className={`filters ${mobileFiltersOpen ? 'is-open' : ''}`} id="opportunity-filters" role="group" aria-label="Filter opportunities">
-            <FilterGroup label="Type" title="Filter by opportunity type" values={types} selected={activeType} onSelect={setActiveType} testPrefix="type" />
-            <FilterGroup label="Discipline" title="Filter by discipline" values={disciplines} selected={activeDiscipline} onSelect={setActiveDiscipline} testPrefix="discipline" />
+            <FilterGroup label="Type" title="Filter by opportunity type" values={types} selected={activeType} onSelect={(value) => { setActiveType(value); if (value !== 'All') countFilter('type', value); }} testPrefix="type" />
+            <FilterGroup label="Discipline" title="Filter by discipline" values={disciplines} selected={activeDiscipline} onSelect={(value) => { setActiveDiscipline(value); if (value !== 'All') countFilter('discipline', value); }} testPrefix="discipline" />
           </div>
 
           <div className="results-toolbar">
@@ -533,7 +536,7 @@ function ListingCard({ item, index, days, formatDate, isSaved, onToggleSaved, on
           {optionalText(item, 'aiPolicy') && <div data-testid="detail-ai-policy"><span>AI policy</span><p>{optionalText(item, 'aiPolicy')}</p></div>}
           <div>
             <span>Something wrong?</span>
-            <p><a className="report-link" href={reportUrlFor(item.name)} target="_blank" rel="noopener noreferrer">Report this listing<span className="sr-only">: {item.name} (opens in a new tab)</span></a></p>
+            <p><a className="report-link" href={reportUrlFor(item.name)} target="_blank" rel="noopener noreferrer" onClick={() => countReportClick('details', item.name)}>Report this listing<span className="sr-only">: {item.name} (opens in a new tab)</span></a></p>
           </div>
         </div>
       </details>
@@ -602,6 +605,7 @@ function App() {
   const view = useView();
   const theme = useTheme();
   const chrome: ChromeProps = { view, ...theme };
+  useEffect(() => { countView(view); }, [view]);
   if (view === 'campus') return <CampusEdition chrome={chrome} />;
   if (view === 'prepare') return <PrepareGuide chrome={chrome} />;
   if (view === 'privacy') return <PrivacyPage chrome={chrome} />;

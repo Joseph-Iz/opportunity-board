@@ -11,7 +11,7 @@ export const supportEmail = 'joeizambus@gmail.com';
 
 export const connectorUrl = 'https://callboard.smythbook.com/mcp';
 
-const POLICY_UPDATED = 'November 18, 2026';
+const POLICY_UPDATED = 'November 22, 2026';
 
 function ContactLine() {
   if (supportEmail) {
@@ -33,15 +33,25 @@ export function PrivacyPage({ chrome }: { chrome: ChromeProps }) {
         <article className="guide" aria-labelledby="privacy-title">
           <header className="guide-head">
             <h1 id="privacy-title">Privacy</h1>
-            <p>Callboard is run by SmythBook LLC. The short version: there are no accounts, ads or analytics, and we don't collect information about you. Last updated {POLICY_UPDATED}.</p>
+            <p>Callboard is run by SmythBook LLC. The short version: there are no accounts, ads or cookies, and we don't collect information about you. We count visits and clicks, never visitors. Last updated {POLICY_UPDATED}.</p>
           </header>
 
           <div className="guide-grid">
             <section className="guide-card">
               <h2>Using the website</h2>
               <ul>
-                <li>There are no accounts, ads, analytics or tracking cookies.</li>
+                <li>There are no accounts, ads or cookies.</li>
                 <li>Listings you save and your light or dark setting are kept only in your own browser. They are never sent to us.</li>
+              </ul>
+            </section>
+
+            <section className="guide-card">
+              <h2>What we count</h2>
+              <ul>
+                <li>To learn which calls are useful, the site keeps daily totals on Callboard's own server: page views, clicks through to official pages, saves, shares, report-link clicks, filters used, and the name of the site a visit came from (such as bsky.app).</li>
+                <li>Each total is just a number for a day, like "14 clicks to this listing on November 23". We don't record IP addresses, browser details or anything else that could single you out, and no other company receives these counts.</li>
+                <li>To tell a first visit from a return, your browser keeps the date of your first visit. That date stays in your browser; the site only reports "new" or "returning".</li>
+                <li>If your browser sends Global Privacy Control or Do Not Track, nothing is counted.</li>
                 <li>Fonts and images come from this site, so browsing it sends nothing to other companies.</li>
               </ul>
             </section>
@@ -50,7 +60,7 @@ export function PrivacyPage({ chrome }: { chrome: ChromeProps }) {
               <h2>Hosting</h2>
               <ul>
                 <li>The site is hosted by Cloudflare. Like any web host, Cloudflare handles basic technical details of each request, such as an IP address and browser type, to deliver the site and protect it from attacks.</li>
-                <li>That handling is covered by Cloudflare's own privacy policy. Callboard adds no tracking on top of it.</li>
+                <li>That handling is covered by Cloudflare's own privacy policy. Callboard adds no tracking on top of it; the counts above are the only thing it keeps.</li>
               </ul>
             </section>
 

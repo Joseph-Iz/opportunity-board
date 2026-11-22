@@ -104,6 +104,23 @@ Campus and Utah opportunities live in `src/campus-listings.json`, separate from 
 
 `test/campus-listings.test.mjs` checks these entries the same way the national list is checked, including the 45-day verification rule for open entries.
 
+## Visit counter
+
+The site counts visits and clicks, not visitors, so we can see which calls are useful without tracking anyone. `src/analytics.ts` (in the browser) sends a tiny note to `/api/hit` (`functions/api/hit.ts` → `src/analytics-server.ts`), which adds one to a daily total in a Cloudflare D1 database.
+
+What gets counted, per day: page views (marked new or returning), the site a visit came from, clicks to official pages, saves, shares, report-link clicks (and where: card, details, header, footer, guide) and filters used. Listing names must match a real listing, so the table can only ever hold names already public on the board. No IP address, browser details, cookies or IDs are stored. Browsers that send Global Privacy Control or Do Not Track send nothing. The Claude connector is not counted.
+
+**Setup (once):** create a D1 database, run `scripts/counter-schema.sql` in it, and bind it to the Pages project as `DB` (Settings → Bindings). Until it is bound, the counter accepts messages and saves nothing.
+
+**Reading the numbers:** in the Cloudflare dashboard's D1 console, for example:
+
+```sql
+-- Most clicked listings, last 30 days
+SELECT detail AS listing, SUM(n) AS clicks FROM counts
+WHERE event = 'official' AND day >= date('now', '-30 day')
+GROUP BY detail ORDER BY clicks DESC;
+```
+
 ## What the tests check
 
 `test/listings.test.mjs` fails the build if a listing:
@@ -129,7 +146,7 @@ The people this board serves are emerging artists, often early in their careers 
 | A bad entry becomes an attack on visitors | A typo or a malicious edit puts a `javascript:` or `data:` link, or a phishing-style `https://trusted.org@evil.example` address, in the data | Tests reject anything but a plain `https://` address, and the page re-checks every link before showing it and shows "Link unavailable" instead. Official links open in a new tab with `noopener`. |
 | Injected or third-party scripts run on the page | A compromised dependency or a stray script tag tries to load code from elsewhere | A strict content security policy only allows scripts, styles, fonts and images from the site itself. |
 | A dependency is compromised | A malicious version of an npm package is published | Dependencies are few (about a dozen) and pinned in `package-lock.json`, resolved only from versions at least a week old. The GitHub check installs exactly those versions. |
-| Visitors are tracked | Third-party fonts, analytics or ads report who visits | No ads, analytics or accounts. Fonts are bundled with the site, so a visit makes no third-party requests. Saved listings stay in the visitor's own browser. |
+| Visitors are tracked | Third-party fonts, analytics or ads report who visits | No ads, cookies, accounts or third-party analytics. Fonts are bundled, so a visit makes no third-party requests. A first-party counter (`/api/hit`) keeps only daily totals per page, listing or filter; it stores no IP address, browser details or ID, accepts only listing names already on the board, and sends nothing when the browser signals Global Privacy Control or Do Not Track. Saved listings stay in the visitor's own browser. |
 | The connector is used to change or pull data | Someone sends the `/mcp` address crafted requests | It has no write tools and no data beyond the public listings. Requests over 64 KB are refused, and it keeps no logs or sessions. |
 | The site is framed by a lookalike page | Another site embeds the board to borrow its credibility | Cloudflare Pages reads `public/_headers` and sends `frame-ancestors 'none'`, which blocks embedding (confirmed on the live site). |
 
