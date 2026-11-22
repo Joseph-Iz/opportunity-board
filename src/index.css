@@ -915,3 +915,8 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
 .guide-words { margin: 0; display: grid; gap: 4px; }
 .guide-words dt { margin-top: 8px; font-weight: 700; }
 .guide-words dd { margin: 0; color: var(--muted); line-height: 1.5; }
+
+/* Career-stage tag on a card: shown only when a call limits who can apply by experience. */
+.stage-tag { display: inline-flex; align-items: center; min-height: 22px; padding: 0 8px; border-radius: 999px; border: 1px dashed var(--line); color: var(--ink); font-size: 12px; font-weight: 700; white-space: nowrap; }
+.stage-early { background: var(--paper-deep); }
+.stage-established { background: var(--card); }

@@ -49,6 +49,8 @@ Each opportunity is one object in `src/listings.json`:
 | `note` | One plain sentence about the opportunity |
 | `disclaimer` | Optional. A short caveat shown on the card when a listing is legitimate but worth knowing more about, such as who runs it |
 | `pays` | Optional. One sentence on whether and what the call pays contributors, shown in the listing's details. Add it only when the official page states it |
+| `stage` | Required on open listings. `early` (capped by experience: no book yet, a limit on productions, "emerging"), `open` (any career stage), or `established` (needs a track record). Drives the Career stage filter: Student = early or open with no `studentNote`; Starting out = early or open; Established = open or established |
+| `studentNote` | Optional. One sentence when degree students (or most undergraduates) can't apply, shown in the listing's details. The Student filter leaves these out |
 | `aiPolicy` | Optional. One sentence on what the call says about AI-assisted work, shown in the listing's details. Add it only when the official page states it |
 
 Run `npm test` after editing.

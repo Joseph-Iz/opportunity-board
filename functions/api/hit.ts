@@ -5,10 +5,10 @@
 import listings from '../../src/listings.json';
 import campusListings from '../../src/campus-listings.json';
 import { type CounterDb, handleCounter } from '../../src/analytics-server.ts';
-import { filterDisciplineLabels, filterTypeLabels } from '../../src/listing-rules.ts';
+import { filterDisciplineLabels, filterTypeLabels, stageFilterLabels } from '../../src/listing-rules.ts';
 
 const allListings = [...listings, ...campusListings];
-const filterValues = [...filterTypeLabels, ...filterDisciplineLabels];
+const filterValues = [...filterTypeLabels, ...filterDisciplineLabels, ...stageFilterLabels];
 
 export const onRequest = ({ request, env }: { request: Request; env: { DB?: CounterDb } }) =>
   handleCounter(request, env.DB, allListings, filterValues);

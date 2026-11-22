@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { test } from 'node:test';
-import { calendarFileFor, matchesSearch } from '../src/listing-rules.ts';
+import { calendarFileFor, fitsStage, matchesSearch } from '../src/listing-rules.ts';
 
 const listings = JSON.parse(await readFile(new URL('../src/listings.json', import.meta.url), 'utf8'));
 const find = (query) => listings.filter((item) => matchesSearch(item, query)).map((item) => item.name);
@@ -35,4 +35,15 @@ test('no calendar file for rolling deadlines, and unsafe links are left out', ()
   const ics = calendarFileFor({ name: 'x', deadline: '2026-12-31', link: 'javascript:alert(1)' });
   assert.ok(!ics.includes('javascript'));
   assert.ok(calendarFileFor({ name: 'x', deadline: '2026-12-31', link: 'https://a.org' }).includes('DTEND;VALUE=DATE:20270101'));
+});
+
+test('the career-stage filter matches who is looking', () => {
+  const early = { stage: 'early' };
+  const open = { stage: 'open' };
+  const established = { stage: 'established' };
+  const noStudents = { stage: 'open', studentNote: 'Full-time students are not eligible.' };
+  assert.deepEqual([early, open, established, noStudents].map((item) => fitsStage(item, 'Student')), [true, true, false, false]);
+  assert.deepEqual([early, open, established, noStudents].map((item) => fitsStage(item, 'Starting out')), [true, true, false, true]);
+  assert.deepEqual([early, open, established, noStudents].map((item) => fitsStage(item, 'Established')), [false, true, true, true]);
+  assert.ok(fitsStage(established, 'All'));
 });
