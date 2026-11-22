@@ -108,7 +108,7 @@ Campus and Utah opportunities live in `src/campus-listings.json`, separate from 
 
 The site counts visits and clicks, not visitors, so we can see which calls are useful without tracking anyone. `src/analytics.ts` (in the browser) sends a tiny note to `/api/hit` (`functions/api/hit.ts` → `src/analytics-server.ts`), which adds one to a daily total in a Cloudflare D1 database.
 
-What gets counted, per day: page views (marked new or returning), the site a visit came from, clicks to official pages, saves, shares, report-link clicks (and where: card, details, header, footer, guide) and filters used. Listing names must match a real listing, so the table can only ever hold names already public on the board. No IP address, browser details, cookies or IDs are stored. Browsers that send Global Privacy Control or Do Not Track send nothing. The Claude connector is not counted.
+What gets counted, per day: page views (marked new or returning), the site a visit came from, clicks to official pages, saves, shares, add-to-calendar clicks, report-link clicks (and where: card, details, header, footer, guide) and filters used. Listing names must match a real listing, so the table can only ever hold names already public on the board. No IP address, browser details, cookies or IDs are stored. Browsers that send Global Privacy Control or Do Not Track send nothing. Search-box text is never sent. The Claude connector is not counted.
 
 **Setup (once):** create a D1 database, run `scripts/counter-schema.sql` in it, and bind it to the Pages project as `DB` (Settings → Bindings). Until it is bound, the counter accepts messages and saves nothing.
 

@@ -55,3 +55,60 @@ export const reportFormUrl = 'https://tally.so/r/YjDNQB';
 export function reportUrlFor(listingName?: string): string {
   return listingName ? `${reportFormUrl}?listing=${encodeURIComponent(listingName)}` : reportFormUrl;
 }
+
+// The board's search box: every word typed must appear somewhere in the listing (its name,
+// who can apply, the award, the fee note, the description, its art forms or its type).
+// Accents and capital letters are ignored, so "chapbook" finds "Chapbook" and "resume" finds "résumé".
+type Searchable = {
+  name: string; type: string; discipline: string[]; award: string; eligibility: string; note: string;
+  feeCondition?: string; pays?: string; aiPolicy?: string; disclaimer?: string;
+};
+
+const fold = (text: string) => text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+export function matchesSearch(item: Searchable, query: string): boolean {
+  const words = fold(query).split(/\s+/).filter(Boolean);
+  if (!words.length) return true;
+  const haystack = fold([
+    item.name, item.type, item.discipline.join(' '), item.award, item.eligibility, item.note,
+    item.feeCondition ?? '', item.pays ?? '', item.aiPolicy ?? '', item.disclaimer ?? '',
+  ].join(' '));
+  return words.every((word) => haystack.includes(word));
+}
+
+// "Add to calendar": a small calendar file (.ics, which Apple, Google and Outlook calendars all
+// open) holding the deadline as an all-day event, with a reminder a week before. It is built in
+// the visitor's browser and never sent anywhere.
+const icsText = (text: string) => text.replace(/\\/g, '\\\\').replace(/\r?\n/g, '\\n').replace(/([,;])/g, '\\$1');
+
+export function calendarFileFor(item: { name: string; deadline: string; link: string }, now: Date = new Date()): string | null {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(item.deadline)) return null;
+  const start = item.deadline.replaceAll('-', '');
+  const [y, m, d] = item.deadline.split('-').map(Number);
+  const end = new Date(Date.UTC(y, m - 1, d + 1)).toISOString().slice(0, 10).replaceAll('-', '');
+  const stamp = now.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+  const link = safeOfficialUrl(item.link);
+  const uidName = item.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  return [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Callboard//Deadlines//EN',
+    'CALSCALE:GREGORIAN',
+    'BEGIN:VEVENT',
+    `UID:${uidName}-${start}@callboard.smythbook.com`,
+    `DTSTAMP:${stamp}`,
+    `DTSTART;VALUE=DATE:${start}`,
+    `DTEND;VALUE=DATE:${end}`,
+    `SUMMARY:${icsText(`Deadline: ${item.name}`)}`,
+    `DESCRIPTION:${icsText(`Check the deadline and rules on the official page before you submit.${link ? `\n${link}` : ''}\nFound on Callboard (callboard.smythbook.com).`)}`,
+    ...(link ? [`URL:${link}`] : []),
+    'BEGIN:VALARM',
+    'ACTION:DISPLAY',
+    `DESCRIPTION:${icsText(`One week left: ${item.name}`)}`,
+    'TRIGGER:-P7D',
+    'END:VALARM',
+    'END:VEVENT',
+    'END:VCALENDAR',
+    '',
+  ].join('\r\n');
+}

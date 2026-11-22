@@ -114,6 +114,28 @@ export function PrepareGuide({ chrome }: { chrome: ChromeProps }) {
               </ul>
             </section>
 
+            <section className="guide-card guide-card-words">
+              <h2>Words you'll see on calls</h2>
+              <dl className="guide-words">
+                <dt>Unpublished</dt>
+                <dd>Not printed or posted anywhere public yet. Many magazines count a poem on your Instagram, Substack or blog as already published, so check before you post work you plan to send out.</dd>
+                <dt>Reading period</dt>
+                <dd>The window when a magazine accepts work. Outside it, the form is usually closed.</dd>
+                <dt>Rolling</dt>
+                <dd>No fixed deadline: the call stays open until the organizers close it.</dd>
+                <dt>Emerging or early-career</dt>
+                <dd>Usually means no book yet, or only a few publications or productions. Each call sets its own limit, so read "Who can apply" closely.</dd>
+                <dt>Simultaneous submission</dt>
+                <dd>Sending the same piece to more than one place at once. See "Sending to more than one place" above.</dd>
+                <dt>First serial rights</dt>
+                <dd>The right to publish the piece first. The rights usually return to you after publication, so you can include it in a book later.</dd>
+                <dt>Chapbook</dt>
+                <dd>A short collection, often about 20 to 40 pages of poems.</dd>
+                <dt>Fellowship, residency, grant</dt>
+                <dd>A fellowship usually pays you over a set time, often with mentoring. A residency gives you time and a place to work, sometimes with a stipend. A grant is money toward a project or its costs.</dd>
+              </dl>
+            </section>
+
             <section className="guide-card guide-card-warning">
               <h2>Signs to walk away</h2>
               <ul>

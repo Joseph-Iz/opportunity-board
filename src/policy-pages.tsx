@@ -48,9 +48,10 @@ export function PrivacyPage({ chrome }: { chrome: ChromeProps }) {
             <section className="guide-card">
               <h2>What we count</h2>
               <ul>
-                <li>To learn which calls are useful, the site keeps daily totals on Callboard's own server: page views, clicks through to official pages, saves, shares, report-link clicks, filters used, and the name of the site a visit came from (such as bsky.app).</li>
+                <li>To learn which calls are useful, the site keeps daily totals on Callboard's own server: page views, clicks through to official pages, saves, shares, deadlines added to calendars, report-link clicks, filters used, and the name of the site a visit came from (such as bsky.app).</li>
                 <li>Each total is just a number for a day, like "14 clicks to this listing on November 23". We don't record IP addresses, browser details or anything else that could single you out, and no other company receives these counts.</li>
                 <li>To tell a first visit from a return, your browser keeps the date of your first visit. That date stays in your browser; the site only reports "new" or "returning".</li>
+                <li>What you type in the search box is never sent to us or counted.</li>
                 <li>If your browser sends Global Privacy Control or Do Not Track, nothing is counted.</li>
                 <li>Fonts and images come from this site, so browsing it sends nothing to other companies.</li>
               </ul>

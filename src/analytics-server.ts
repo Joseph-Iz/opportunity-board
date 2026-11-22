@@ -56,6 +56,7 @@ export function talliesFor(message: unknown, listingNames: Set<string>, filterVa
     case 'official':
     case 'save':
     case 'share':
+    case 'calendar':
       return listing ? [{ event: m.event, detail: listing }] : null;
     case 'report': {
       if (!isOneOf(reportPlaces, m.place)) return null;

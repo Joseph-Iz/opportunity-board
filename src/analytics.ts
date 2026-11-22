@@ -67,5 +67,6 @@ export const countView = (page: PageName) => send({ event: 'view', page, returni
 export const countOfficialClick = (listing: string) => send({ event: 'official', listing });
 export const countReportClick = (place: ReportPlace, listing?: string) => send({ event: 'report', place, listing });
 export const countSave = (listing: string) => send({ event: 'save', listing });
+export const countCalendar = (listing: string) => send({ event: 'calendar', listing });
 export const countShare = (listing: string) => send({ event: 'share', listing });
 export const countFilter = (group: 'type' | 'discipline', value: string) => send({ event: 'filter', group, value });
