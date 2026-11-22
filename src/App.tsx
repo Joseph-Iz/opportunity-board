@@ -5,19 +5,22 @@ import {
   Award,
   Bookmark,
   CalendarDays,
+  CalendarPlus,
   Check,
   ChevronDown,
   Info,
+  Search,
   Share2,
   SlidersHorizontal,
   X,
 } from 'lucide-react';
 import listings from './listings.json';
-import { filterDisciplineLabels, filterTypeLabels, isDeadlineOpen, isRecentlyClosed, RECENTLY_CLOSED_DAYS, reportUrlFor, safeOfficialUrl } from './listing-rules';
+import { calendarFileFor, filterDisciplineLabels, filterTypeLabels, isDeadlineOpen, isRecentlyClosed, matchesSearch, RECENTLY_CLOSED_DAYS, reportUrlFor, safeOfficialUrl } from './listing-rules';
 import { CampusEdition } from './campus';
 import { PrepareGuide } from './prepare';
 import { ConnectorGuide, PrivacyPage } from './policy-pages';
-import { type ChromeProps, Masthead, OfficialLink, SiteFooter, useTheme, useView } from './site-chrome';
+import { countCalendar, countFilter, countReportClick, countSave, countShare, countView } from './analytics';
+import { type ChromeProps, Masthead, OfficialLink, ReportListingLink, SiteFooter, useTheme, useView } from './site-chrome';
 
 type Listing = (typeof listings)[number];
 
@@ -137,6 +140,7 @@ function Home({ chrome }: { chrome: ChromeProps }) {
   const [activeDiscipline, setActiveDiscipline] = useState('All');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [showSaved, setShowSaved] = useState(false);
+  const [searchText, setSearchText] = useState('');
   const [savedListings, setSavedListings] = useState<Set<string>>(readSavedListings);
   const [shareStatus, setShareStatus] = useState<ShareStatus>(null);
 
@@ -165,11 +169,12 @@ function Home({ chrome }: { chrome: ChromeProps }) {
     .filter((item) => !showSaved || savedListings.has(item.name))
     .filter((item) => activeType === 'All' || item.type.toLowerCase() === activeType.toLowerCase())
     .filter((item) => activeDiscipline === 'All' || item.discipline.includes(activeDiscipline))
+    .filter((item) => matchesSearch(item, searchText))
     .sort((a, b) => {
       if (a.deadline === 'rolling') return b.deadline === 'rolling' ? 0 : 1;
       if (b.deadline === 'rolling') return -1;
       return a.deadline.localeCompare(b.deadline);
-    }), [activeType, activeDiscipline, savedListings, showSaved, todayKey]);
+    }), [activeType, activeDiscipline, savedListings, showSaved, searchText, todayKey]);
   // Closed calls are kept, not deleted: newest-closed first, for the last RECENTLY_CLOSED_DAYS days.
   const recentlyClosed = useMemo(() => listings
     .filter((item) => isRecentlyClosed(item.deadline, todayKey))
@@ -189,12 +194,14 @@ function Home({ chrome }: { chrome: ChromeProps }) {
   const clearFilters = () => {
     setActiveType('All');
     setActiveDiscipline('All');
+    setSearchText('');
   };
   const clearAllBrowseFilters = () => {
     clearFilters();
     setShowSaved(false);
   };
   const toggleSavedListing = (name: string) => {
+    if (!savedListings.has(name)) countSave(name);
     setSavedListings((current) => {
       const next = new Set(current);
       if (next.has(name)) next.delete(name);
@@ -208,6 +215,7 @@ function Home({ chrome }: { chrome: ChromeProps }) {
       if (!href) throw new Error('This listing has no safe official link to copy.');
       await copyTextToClipboard(href);
       setShareStatus({ name: item.name, status: 'copied' });
+      countShare(item.name);
     } catch (error) {
       console.warn('Could not copy the official opportunity link.', error);
       setShareStatus({ name: item.name, status: 'error' });
@@ -265,6 +273,22 @@ function Home({ chrome }: { chrome: ChromeProps }) {
             </div>
           </div>
 
+          {/* What people type here is never sent anywhere, including to the visit counter. */}
+          <div className="search-box">
+            <Search className="search-icon" size={17} aria-hidden="true" />
+            <label className="sr-only" htmlFor="listing-search">Search the listings</label>
+            <input
+              id="listing-search"
+              type="search"
+              value={searchText}
+              onChange={(event) => setSearchText(event.target.value)}
+              placeholder="Search: first book, essay, stipend, students…"
+              autoComplete="off"
+              enterKeyHint="search"
+              data-testid="input-search"
+            />
+          </div>
+
           <button
             className="mobile-filter-toggle"
             type="button"
@@ -277,8 +301,8 @@ function Home({ chrome }: { chrome: ChromeProps }) {
             {activeFilterCount > 0 && <span className="filter-count-badge" aria-label={`${activeFilterCount} active filters`}>{activeFilterCount}</span>}
           </button>
           <div className={`filters ${mobileFiltersOpen ? 'is-open' : ''}`} id="opportunity-filters" role="group" aria-label="Filter opportunities">
-            <FilterGroup label="Type" title="Filter by opportunity type" values={types} selected={activeType} onSelect={setActiveType} testPrefix="type" />
-            <FilterGroup label="Discipline" title="Filter by discipline" values={disciplines} selected={activeDiscipline} onSelect={setActiveDiscipline} testPrefix="discipline" />
+            <FilterGroup label="Type" title="Filter by opportunity type" values={types} selected={activeType} onSelect={(value) => { setActiveType(value); if (value !== 'All') countFilter('type', value); }} testPrefix="type" />
+            <FilterGroup label="Discipline" title="Filter by discipline" values={disciplines} selected={activeDiscipline} onSelect={(value) => { setActiveDiscipline(value); if (value !== 'All') countFilter('discipline', value); }} testPrefix="discipline" />
           </div>
 
           <div className="results-toolbar">
@@ -289,7 +313,7 @@ function Home({ chrome }: { chrome: ChromeProps }) {
               )}
             </div>
             <div className="results-actions">
-              <button className="clear-button" type="button" onClick={clearAllBrowseFilters} disabled={activeType === 'All' && activeDiscipline === 'All' && !showSaved} data-testid="button-clear-filters">
+              <button className="clear-button" type="button" onClick={clearAllBrowseFilters} disabled={activeType === 'All' && activeDiscipline === 'All' && !showSaved && !searchText.trim()} data-testid="button-clear-filters">
                 <X size={14} /> Clear all
               </button>
               <button
@@ -326,7 +350,7 @@ function Home({ chrome }: { chrome: ChromeProps }) {
             <div className="empty-state" data-testid="status-no-results">
               <span className="empty-mark" aria-hidden="true">✳</span>
               <h3>{showSaved ? 'No saved opportunities yet.' : 'No matches in this little corner.'}</h3>
-              <p>{showSaved ? 'Bookmark a listing to keep it here on this device.' : 'Try another type or discipline to see what’s open.'}</p>
+              <p>{showSaved ? 'Bookmark a listing to keep it here on this device.' : searchText.trim() ? 'Try fewer or different words, or clear the search to see everything open.' : 'Try another type or discipline to see what’s open.'}</p>
               <button type="button" className="reset-filters" onClick={clearAllBrowseFilters}>Show everything</button>
             </div>
           )}
@@ -460,7 +484,10 @@ function FeatureCard({ item, index, days, formatDate, isSaved, onToggleSaved, on
       </div>
       <ListingDisclaimer item={item} />
       <div className="feature-foot">
-        <span className="verified"><Check size={14} /> Verified {formatShortDate(item.verified)}</span>
+        <span className="verified-line">
+          <span className="verified"><Check size={14} /> Verified {formatShortDate(item.verified)}</span>
+          <ReportListingLink name={item.name} testId={`link-feature-report-${index + 1}`} />
+        </span>
         <div className="feature-actions">
           <ListingActionButtons item={item} isSaved={isSaved} onToggleSaved={onToggleSaved} onCopyLink={onCopyLink} copyStatus={copyStatus} />
           <OfficialLink link={item.link} name={item.name} testId={`link-feature-official-${index + 1}`} />
@@ -489,6 +516,7 @@ function ListingCard({ item, index, days, formatDate, isSaved, onToggleSaved, on
           {item.fee === 0 && <FeeSticker item={item} extraClass="listing-free-sticker" />}
         </div>
         <h3>{item.name}</h3>
+        <p className="listing-who"><span>Who can apply:</span> {item.eligibility}</p>
         <ListingDisclaimer item={item} />
       </div>
       <div className="listing-glance">
@@ -505,7 +533,10 @@ function ListingCard({ item, index, days, formatDate, isSaved, onToggleSaved, on
             <strong>{item.award}</strong>
           </div>
         </div>
-        <span className="verified"><Check size={14} /> Verified {formatShortDate(item.verified)}</span>
+        <span className="verified-line">
+          <span className="verified"><Check size={14} /> Verified {formatShortDate(item.verified)}</span>
+          <ReportListingLink name={item.name} testId={`link-report-${index + 1}`} />
+        </span>
         <OfficialLink link={item.link} name={item.name} testId={`link-official-${index + 1}`} />
         <ListingActionButtons item={item} isSaved={isSaved} onToggleSaved={onToggleSaved} onCopyLink={onCopyLink} copyStatus={copyStatus} />
       </div>
@@ -525,14 +556,37 @@ function ListingCard({ item, index, days, formatDate, isSaved, onToggleSaved, on
           <div><span>About this call</span><p>{item.note}</p></div>
           {optionalText(item, 'pays') && <div data-testid="detail-pays"><span>Pay</span><p>{optionalText(item, 'pays')}</p></div>}
           {optionalText(item, 'aiPolicy') && <div data-testid="detail-ai-policy"><span>AI policy</span><p>{optionalText(item, 'aiPolicy')}</p></div>}
+          {item.deadline !== 'rolling' && (
+            <div>
+              <span>Deadline reminder</span>
+              <p><button type="button" className="report-link calendar-button" onClick={() => downloadCalendarFile(item)} data-testid={`button-calendar-${index + 1}`}>
+                <CalendarPlus size={14} aria-hidden="true" /> Add to my calendar<span className="sr-only"> ({item.name} deadline)</span>
+              </button> <span className="calendar-hint">with a reminder a week before</span></p>
+            </div>
+          )}
           <div>
             <span>Something wrong?</span>
-            <p><a className="report-link" href={reportUrlFor(item.name)} target="_blank" rel="noopener noreferrer">Report this listing<span className="sr-only">: {item.name} (opens in a new tab)</span></a></p>
+            <p><a className="report-link" href={reportUrlFor(item.name)} target="_blank" rel="noopener noreferrer" onClick={() => countReportClick('details', item.name)}>Report this listing<span className="sr-only">: {item.name} (opens in a new tab)</span></a></p>
           </div>
         </div>
       </details>
     </article>
   );
+}
+
+// Builds the calendar file in the browser and hands it to the visitor's calendar app.
+function downloadCalendarFile(item: Listing) {
+  const text = calendarFileFor(item);
+  if (!text) return;
+  countCalendar(item.name);
+  const url = URL.createObjectURL(new Blob([text], { type: 'text/calendar;charset=utf-8' }));
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = `${item.name.replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '')}-deadline.ics`;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 function TrustSection() {
@@ -596,6 +650,7 @@ function App() {
   const view = useView();
   const theme = useTheme();
   const chrome: ChromeProps = { view, ...theme };
+  useEffect(() => { countView(view); }, [view]);
   if (view === 'campus') return <CampusEdition chrome={chrome} />;
   if (view === 'prepare') return <PrepareGuide chrome={chrome} />;
   if (view === 'privacy') return <PrivacyPage chrome={chrome} />;

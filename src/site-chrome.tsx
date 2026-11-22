@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { ArrowUpRight, Info, Moon, Sun } from 'lucide-react';
+import { ArrowUpRight, Flag, Info, Moon, Sun } from 'lucide-react';
+import { countOfficialClick, countReportClick } from './analytics';
 import { reportUrlFor, safeOfficialUrl } from './listing-rules';
 
 // The parts every page of the site shares: which page is showing, the light/dark setting,
@@ -86,7 +87,7 @@ export const formatLongDate = (date: string) => new Date(`${date}T00:00:00Z`).to
 
 const sections: { view: View; href: string; label: string; pill?: string }[] = [
   { view: 'board', href: '#board', label: 'The board' },
-  { view: 'campus', href: '#campus', label: 'Campus edition', pill: 'Preview' },
+  { view: 'campus', href: '#campus', label: 'Campus edition: U of U', pill: 'Preview' },
   { view: 'prepare', href: '#prepare', label: 'Submission guide' },
 ];
 
@@ -101,6 +102,11 @@ export function Masthead({ view, darkMode, toggleTheme, updated }: ChromeProps &
         <p className="header-promise">Good things for people who make things. Every call is free to apply and checked by a person.</p>
         <div className="header-actions">
           <span className="last-updated">Last updated <strong>{formatLongDate(updated)}</strong></span>
+          <a className="header-report" href={reportUrlFor()} title="Report a problem with a listing" target="_blank" rel="noopener noreferrer" onClick={() => countReportClick('header')} data-testid="link-header-report">
+            <Flag size={15} aria-hidden="true" />
+            <span>Report a problem</span>
+            <span className="sr-only"> with a listing (opens in a new tab)</span>
+          </a>
           <a className="header-info icon-button" href="#how-this-list-is-kept" aria-label="How this list is kept" title="How this list is kept">
             <Info size={17} aria-hidden="true" />
           </a>
@@ -141,7 +147,7 @@ export function SiteFooter() {
       <span className="footer-squiggle" aria-hidden="true">〰</span>
       <p>
         Always check the official page before submitting. Real opportunities never ask you to pay to be considered.{' '}
-        <a className="footer-report" href={reportUrlFor()} target="_blank" rel="noopener noreferrer">Spot a problem? Report a listing<span className="sr-only"> (opens in a new tab)</span></a>
+        <a className="footer-report" href={reportUrlFor()} target="_blank" rel="noopener noreferrer" onClick={() => countReportClick('footer')}>Spot a problem? Report a listing<span className="sr-only"> (opens in a new tab)</span></a>
         <br />
         <a className="footer-report" href="#claude">Use Callboard in Claude</a>
         <span aria-hidden="true"> · </span>
@@ -154,6 +160,17 @@ export function SiteFooter() {
   );
 }
 
+// A small "Report" link that sits beside each listing's Verified stamp, so a visitor who spots
+// a problem never has to open the listing's details to find the form.
+export function ReportListingLink({ name, testId }: { name: string; testId: string }) {
+  return (
+    <a className="card-report" href={reportUrlFor(name)} target="_blank" rel="noopener noreferrer" onClick={() => countReportClick('card', name)} data-testid={testId}>
+      <Flag size={12} aria-hidden="true" />
+      Report<span className="sr-only"> a problem with {name} (opens in a new tab)</span>
+    </a>
+  );
+}
+
 export function OfficialLink({ link, name, testId }: { link: string; name: string; testId: string }) {
   const href = safeOfficialUrl(link);
   // A link that fails the safety check is shown as unavailable instead of being rendered.
@@ -161,7 +178,7 @@ export function OfficialLink({ link, name, testId }: { link: string; name: strin
     return <span className="official-link official-link-unavailable" data-testid={testId}>Link unavailable</span>;
   }
   return (
-    <a className="official-link" href={href} target="_blank" rel="noopener noreferrer" data-testid={testId}>
+    <a className="official-link" href={href} target="_blank" rel="noopener noreferrer" onClick={() => countOfficialClick(name)} data-testid={testId}>
       Go to official page<span className="sr-only"> for {name} (opens in a new tab)</span> <ArrowUpRight size={16} aria-hidden="true" />
     </a>
   );
