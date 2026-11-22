@@ -87,7 +87,7 @@ export const formatLongDate = (date: string) => new Date(`${date}T00:00:00Z`).to
 
 const sections: { view: View; href: string; label: string; pill?: string }[] = [
   { view: 'board', href: '#board', label: 'The board' },
-  { view: 'campus', href: '#campus', label: 'Campus edition', pill: 'Preview' },
+  { view: 'campus', href: '#campus', label: 'Campus edition: U of U', pill: 'Preview' },
   { view: 'prepare', href: '#prepare', label: 'Submission guide' },
 ];
 
