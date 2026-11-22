@@ -2,7 +2,7 @@
   "name": "callboard",
   "version": "1.0.0",
   "private": true,
-  "description": "A free, ad-free, human-verified board of opportunities for emerging writers and artists.",
+  "description": "A free, ad-free, human-verified board of opportunities for writers and artists, emerging first.",
   "type": "module",
   "engines": {
     "node": ">=22.18"

@@ -1,6 +1,6 @@
 # Callboard
 
-In theater, the callboard is where auditions and calls get posted. This one is a free, ad-free board of opportunities for emerging writers and artists: calls for submissions, grants, residencies, fellowships, and contests. Every listing is checked by a person against the organization's own page before it is published, and nothing on the board charges a fee to apply.
+In theater, the callboard is where auditions and calls get posted. This one is a free, ad-free board of opportunities for writers and artists at every career stage, emerging first: calls for submissions, grants, residencies, fellowships, and contests. Every listing is checked by a person against the organization's own page before it is published, and nothing on the board charges a fee to apply.
 
 **Live site:** https://callboard.smythbook.com
 
@@ -14,6 +14,8 @@ In theater, the callboard is where auditions and calls get posted. This one is a
 4. When a deadline passes, the listing is not deleted: it moves to a "Recently closed" section for 90 days, so someone who saw it can still find it and watch for the next round.
 
 Visitors can flag a problem with any listing through a short anonymous form (linked in the footer and in each listing's details); reports are reviewed with each update.
+
+The scan looks for calls at every career stage, with emerging and early-career calls first and at most three that need a track record per run. Each candidate's evidence notes its stage, which becomes the listing's `stage` field.
 
 Listings must be free to apply, open to US adults nationwide (relocation for a program is fine), and verifiable on the organization's own site. "Free" means free to submit online: a call whose only no-fee route is postal mail is left off, because printing and postage are a cost in everything but name. Where a call is free on the route the listing covers but charges on another — a genre, a contest, an optional add-on — the listing says so on its face rather than claiming an unqualified "No fee".
 
