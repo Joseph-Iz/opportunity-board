@@ -112,3 +112,30 @@ export function calendarFileFor(item: { name: string; deadline: string; link: st
     '',
   ].join('\r\n');
 }
+
+// Career stage. Each open listing carries one tag, read from its own "who can apply" text:
+//   early        – capped by experience (no book yet, at most two produced plays, "emerging")
+//   open         – any career stage may apply
+//   established  – needs a track record (working journalists, a confirmed exhibition)
+// A listing can also carry a studentNote when degree students (or most undergraduates) can't apply.
+// The board's "Career stage" filter is phrased by who is looking, not by the tag names.
+export const listingStages = ['early', 'open', 'established'] as const;
+export type ListingStage = (typeof listingStages)[number];
+
+export const stageTagLabels: Record<ListingStage, string> = {
+  early: 'Early-career only',
+  open: 'Open to all stages',
+  established: 'Needs a track record',
+};
+
+export const stageFilterLabels = ['All', 'Student', 'Starting out', 'Established'] as const;
+
+export function fitsStage(item: { stage?: string; studentNote?: string }, filter: string): boolean {
+  const stage = item.stage ?? 'open';
+  switch (filter) {
+    case 'Student': return stage !== 'established' && !item.studentNote;
+    case 'Starting out': return stage !== 'established';
+    case 'Established': return stage !== 'early';
+    default: return true;
+  }
+}

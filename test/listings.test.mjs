@@ -52,7 +52,7 @@ test('every listing includes all required fields in the expected format', () => 
     }
     assert.ok(isRealCalendarDate(listing.verified), `Listing ${index + 1} has an invalid verified date`);
     // Optional text fields: when one is present it must say something.
-    for (const field of ['disclaimer', 'pays', 'aiPolicy']) {
+    for (const field of ['disclaimer', 'pays', 'aiPolicy', 'studentNote']) {
       if (Object.hasOwn(listing, field)) {
         assert.ok(typeof listing[field] === 'string' && listing[field].trim().length > 0, `Listing ${index + 1} has an empty ${field}`);
       }
@@ -110,6 +110,17 @@ test('every listing type and discipline is available in the filters', () => {
     assert.ok(knownTypes.has(listing.type), `${listing.name} has a type the filters do not know: ${listing.type}`);
     for (const discipline of listing.discipline) {
       assert.ok(knownDisciplines.has(discipline), `${listing.name} has a discipline the filters do not know: ${discipline}`);
+    }
+  }
+});
+
+test('every open listing has a career-stage tag the filter understands', () => {
+  const today = new Date().toISOString().slice(0, 10);
+  for (const listing of listings) {
+    if (Object.hasOwn(listing, 'stage')) {
+      assert.ok(['early', 'open', 'established'].includes(listing.stage), `${listing.name} has an unknown stage "${listing.stage}"`);
+    } else {
+      assert.ok(listing.deadline !== 'rolling' && listing.deadline < today, `${listing.name} is open but has no "stage" tag`);
     }
   }
 });

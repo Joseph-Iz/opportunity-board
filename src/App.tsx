@@ -15,7 +15,7 @@ import {
   X,
 } from 'lucide-react';
 import listings from './listings.json';
-import { calendarFileFor, filterDisciplineLabels, filterTypeLabels, isDeadlineOpen, isRecentlyClosed, matchesSearch, RECENTLY_CLOSED_DAYS, reportUrlFor, safeOfficialUrl } from './listing-rules';
+import { calendarFileFor, filterDisciplineLabels, filterTypeLabels, fitsStage, isDeadlineOpen, isRecentlyClosed, type ListingStage, matchesSearch, RECENTLY_CLOSED_DAYS, reportUrlFor, safeOfficialUrl, stageFilterLabels, stageTagLabels } from './listing-rules';
 import { CampusEdition } from './campus';
 import { PrepareGuide } from './prepare';
 import { ConnectorGuide, PrivacyPage } from './policy-pages';
@@ -26,6 +26,7 @@ type Listing = (typeof listings)[number];
 
 const types = [...filterTypeLabels];
 const disciplines = [...filterDisciplineLabels];
+const stages = [...stageFilterLabels];
 const classNameFor = (value: string) => value.toLowerCase().replaceAll(' ', '-');
 const disciplineAccents: Record<string, string> = {
   Poetry: 'var(--plum)',
@@ -82,7 +83,7 @@ const disclaimerFor = (item: Listing): string | null =>
 
 // Two more optional facts, shown in a listing's details only when a person has verified them on
 // the official page: whether the call pays, and what it says about AI-assisted work.
-const optionalText = (item: Listing, field: 'pays' | 'aiPolicy'): string | null => {
+const optionalText = (item: Listing, field: 'pays' | 'aiPolicy' | 'studentNote'): string | null => {
   const value = (item as Record<string, unknown>)[field];
   return typeof value === 'string' && value.trim() ? value : null;
 };
@@ -141,6 +142,7 @@ function Home({ chrome }: { chrome: ChromeProps }) {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [showSaved, setShowSaved] = useState(false);
   const [searchText, setSearchText] = useState('');
+  const [activeStage, setActiveStage] = useState('All');
   const [savedListings, setSavedListings] = useState<Set<string>>(readSavedListings);
   const [shareStatus, setShareStatus] = useState<ShareStatus>(null);
 
@@ -169,17 +171,18 @@ function Home({ chrome }: { chrome: ChromeProps }) {
     .filter((item) => !showSaved || savedListings.has(item.name))
     .filter((item) => activeType === 'All' || item.type.toLowerCase() === activeType.toLowerCase())
     .filter((item) => activeDiscipline === 'All' || item.discipline.includes(activeDiscipline))
+    .filter((item) => fitsStage(item, activeStage))
     .filter((item) => matchesSearch(item, searchText))
     .sort((a, b) => {
       if (a.deadline === 'rolling') return b.deadline === 'rolling' ? 0 : 1;
       if (b.deadline === 'rolling') return -1;
       return a.deadline.localeCompare(b.deadline);
-    }), [activeType, activeDiscipline, savedListings, showSaved, searchText, todayKey]);
+    }), [activeType, activeDiscipline, activeStage, savedListings, showSaved, searchText, todayKey]);
   // Closed calls are kept, not deleted: newest-closed first, for the last RECENTLY_CLOSED_DAYS days.
   const recentlyClosed = useMemo(() => listings
     .filter((item) => isRecentlyClosed(item.deadline, todayKey))
     .sort((a, b) => b.deadline.localeCompare(a.deadline)), [todayKey]);
-  const activeFilterCount = Number(activeType !== 'All') + Number(activeDiscipline !== 'All') + Number(showSaved);
+  const activeFilterCount = Number(activeType !== 'All') + Number(activeDiscipline !== 'All') + Number(activeStage !== 'All') + Number(showSaved);
 
   const daysUntil = (deadline: string) => {
     const [year, month, day] = deadline.split('-').map(Number);
@@ -194,6 +197,7 @@ function Home({ chrome }: { chrome: ChromeProps }) {
   const clearFilters = () => {
     setActiveType('All');
     setActiveDiscipline('All');
+    setActiveStage('All');
     setSearchText('');
   };
   const clearAllBrowseFilters = () => {
@@ -303,17 +307,18 @@ function Home({ chrome }: { chrome: ChromeProps }) {
           <div className={`filters ${mobileFiltersOpen ? 'is-open' : ''}`} id="opportunity-filters" role="group" aria-label="Filter opportunities">
             <FilterGroup label="Type" title="Filter by opportunity type" values={types} selected={activeType} onSelect={(value) => { setActiveType(value); if (value !== 'All') countFilter('type', value); }} testPrefix="type" />
             <FilterGroup label="Discipline" title="Filter by discipline" values={disciplines} selected={activeDiscipline} onSelect={(value) => { setActiveDiscipline(value); if (value !== 'All') countFilter('discipline', value); }} testPrefix="discipline" />
+            <FilterGroup label="Career stage" title="Show calls that fit where you are" values={stages} selected={activeStage} onSelect={(value) => { setActiveStage(value); if (value !== 'All') countFilter('stage', value); }} testPrefix="stage" />
           </div>
 
           <div className="results-toolbar">
             <div className="results-bar" aria-live="polite">
               <p><strong>{visibleListings.length}</strong> {visibleListings.length === 1 ? 'opportunity' : 'opportunities'} to explore</p>
-              {(activeType !== 'All' || activeDiscipline !== 'All') && (
-                <span className="active-filter-note">{[activeType !== 'All' && activeType, activeDiscipline !== 'All' && activeDiscipline].filter(Boolean).join(' · ')}</span>
+              {(activeType !== 'All' || activeDiscipline !== 'All' || activeStage !== 'All') && (
+                <span className="active-filter-note">{[activeType !== 'All' && activeType, activeDiscipline !== 'All' && activeDiscipline, activeStage !== 'All' && activeStage].filter(Boolean).join(' · ')}</span>
               )}
             </div>
             <div className="results-actions">
-              <button className="clear-button" type="button" onClick={clearAllBrowseFilters} disabled={activeType === 'All' && activeDiscipline === 'All' && !showSaved && !searchText.trim()} data-testid="button-clear-filters">
+              <button className="clear-button" type="button" onClick={clearAllBrowseFilters} disabled={activeType === 'All' && activeDiscipline === 'All' && activeStage === 'All' && !showSaved && !searchText.trim()} data-testid="button-clear-filters">
                 <X size={14} /> Clear all
               </button>
               <button
@@ -514,6 +519,7 @@ function ListingCard({ item, index, days, formatDate, isSaved, onToggleSaved, on
           ))}
           <span className="type-tag">{item.type}</span>
           {item.fee === 0 && <FeeSticker item={item} extraClass="listing-free-sticker" />}
+          <StageTag item={item} />
         </div>
         <h3>{item.name}</h3>
         <p className="listing-who"><span>Who can apply:</span> {item.eligibility}</p>
@@ -554,6 +560,8 @@ function ListingCard({ item, index, days, formatDate, isSaved, onToggleSaved, on
             <p>{item.feeCondition || (item.fee === 0 ? 'No fee' : `$${item.fee}`)}</p>
           </div>
           <div><span>About this call</span><p>{item.note}</p></div>
+          {item.stage && <div data-testid="detail-stage"><span>Career stage</span><p>{stageTagLabels[item.stage as ListingStage] ?? ''}</p></div>}
+          {optionalText(item, 'studentNote') && <div data-testid="detail-students"><span>Students</span><p>{optionalText(item, 'studentNote')}</p></div>}
           {optionalText(item, 'pays') && <div data-testid="detail-pays"><span>Pay</span><p>{optionalText(item, 'pays')}</p></div>}
           {optionalText(item, 'aiPolicy') && <div data-testid="detail-ai-policy"><span>AI policy</span><p>{optionalText(item, 'aiPolicy')}</p></div>}
           {item.deadline !== 'rolling' && (
@@ -587,6 +595,12 @@ function downloadCalendarFile(item: Listing) {
   anchor.click();
   anchor.remove();
   window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+// Only the two limiting tags show on the card; "open to all" is the usual case and stays in Details.
+function StageTag({ item }: { item: Listing }) {
+  if (item.stage !== 'early' && item.stage !== 'established') return null;
+  return <span className={`stage-tag stage-${item.stage}`}>{stageTagLabels[item.stage]}</span>;
 }
 
 function TrustSection() {

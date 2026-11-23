@@ -21,7 +21,7 @@ const MAX_BODY_BYTES = 1024;
 
 export const pageNames = ['board', 'campus', 'prepare', 'privacy', 'claude'] as const;
 export const reportPlaces = ['card', 'details', 'header', 'footer', 'guide'] as const;
-const filterGroups = ['type', 'discipline'] as const;
+const filterGroups = ['type', 'discipline', 'stage'] as const;
 
 // Search crawlers and link-preview bots don't usually run the page's code, but some do.
 const botPattern = /bot|crawl|spider|slurp|preview|headless|lighthouse/i;
