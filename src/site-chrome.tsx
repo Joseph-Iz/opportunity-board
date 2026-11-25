@@ -20,7 +20,7 @@ const hashViews: Record<string, View> = {
 const viewFromHash = (hash: string): View => hashViews[hash] ?? 'board';
 
 const pageTitles: Record<View, string> = {
-  board: 'Callboard: free, verified calls for writers and artists',
+  board: 'Callboard by SmythBook: free, verified calls for writers and artists',
   campus: 'Campus edition preview · Callboard',
   prepare: 'Preparing your submission · Callboard',
   privacy: 'Privacy · Callboard',

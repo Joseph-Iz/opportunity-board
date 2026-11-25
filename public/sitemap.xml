@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The list of pages search engines should crawl; public/robots.txt points them here.
+     The site is one page: the #campus, #prepare, #claude and #privacy sections are parts of it,
+     not separate pages, so search engines ignore them and they are not listed. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://callboard.smythbook.com/</loc>
+  </url>
+</urlset>
