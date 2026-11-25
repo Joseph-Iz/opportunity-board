@@ -67,6 +67,8 @@ The site is one static page, so the part of the address after `#` picks what sho
 - **Use Callboard in Claude** (`/#claude`): how to add the Callboard connector to Claude, described below.
 - **Privacy** (`/#privacy`): the privacy policy for the site, the report form and the connector. The contact shown there is set by `supportEmail` in `src/policy-pages.tsx` (if it is ever left empty, the pages point to the contact form instead).
 
+Search engines see one page. `public/robots.txt` lets them crawl the whole site and points them to `public/sitemap.xml`, which lists the homepage; the `#` sections are parts of that page, so they are not listed. The homepage title is set in two places, `index.html` (what search engines read first) and the `board` title in `src/site-chrome.tsx` (shown once the page loads), and a test keeps them the same.
+
 ## Callboard in Claude (the connector)
 
 Callboard also answers AI assistants directly, through a small read-only connector at `https://callboard.smythbook.com/mcp`. It uses MCP (Model Context Protocol), the open standard Claude uses for connectors. Anyone can add it in Claude under Customize → Connectors → Add custom connector, with no sign-in.
@@ -134,7 +136,7 @@ GROUP BY detail ORDER BY clicks DESC;
 - is still open and was last verified more than 45 days ago
 - uses a type or discipline the site's filters do not know
 
-Further tests check that every listing is free to apply, that every link passes the page's own safety check (and that unsafe links such as `javascript:` or `https://trusted.org@evil.example` are refused), and that the security headers file matches the build's content security policy.
+Further tests check that every listing is free to apply, that every link passes the page's own safety check (and that unsafe links such as `javascript:` or `https://trusted.org@evil.example` are refused), that the security headers file matches the build's content security policy, and that the robots file, sitemap and homepage title agree (`test/search-files.test.mjs`).
 
 The same rules file (`src/listing-rules.ts`) drives both the filters and the tests, so they cannot drift apart. Every push runs these checks automatically on GitHub (`.github/workflows/ci.yml`), and a separate weekly job (`.github/workflows/link-check.yml`) visits every official link.
 
