@@ -161,6 +161,8 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
   white-space: nowrap;
 }
 .header-report:hover { color: var(--coral); }
+/* Phones only (see the 650px block below); wider screens use the labeled header button. */
+.header-report-row { display: none; }
 .header-report:focus-visible, .card-report:focus-visible { outline: 2px solid var(--mint); outline-offset: 2px; }
 .verified-line { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; }
 .card-report { display: inline-flex; align-items: center; gap: 3px; min-height: 24px; color: var(--muted); font-size: 12px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
@@ -637,7 +639,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
     min-height: 88px;
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-areas: "brand actions" "promise promise";
+    grid-template-areas: "brand actions" "promise promise" "report report";
     align-content: center;
     gap: 6px 10px;
     padding: 9px 0 8px;
@@ -651,8 +653,25 @@ button:focus-visible, a:focus-visible, summary:focus-visible {
   .theme-toggle { min-height: 44px; width: 44px; padding: 0; border-radius: 13px; }
   .theme-toggle span { display: none; }
   .header-info { width: 44px; height: 44px; }
-  .header-report { min-height: 44px; width: 44px; padding: 0; justify-content: center; border-radius: 13px; }
-  .header-report > span:not(.sr-only) { display: none; }
+  .header-report { display: none; }
+  .header-report-row {
+    grid-area: report;
+    justify-self: start;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 12px;
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    background: var(--card);
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .header-report-row:hover { color: var(--coral); }
+  .header-report-row:focus-visible { outline: 2px solid var(--mint); outline-offset: 2px; }
   .feature-section { padding: 10px 0 18px; }
   .section-heading { margin-bottom: 8px; }
   .feature-heading h1 { font-size: 24px; }
