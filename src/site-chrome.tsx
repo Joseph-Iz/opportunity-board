@@ -100,6 +100,13 @@ export function Masthead({ view, darkMode, toggleTheme, updated }: ChromeProps &
           <span>Callboard</span>
         </a>
         <p className="header-promise">Good things for people who make things. Every call is free to apply and checked by a person.</p>
+        {/* Phones only: the header button above shrinks to a bare flag there, so this labeled link
+            keeps "Report a problem" visible at the top of the board on small screens too. */}
+        <a className="header-report-row" href={reportUrlFor()} target="_blank" rel="noopener noreferrer" onClick={() => countReportClick('header')} data-testid="link-header-report-mobile">
+          <Flag size={14} aria-hidden="true" />
+          <span>Spot a problem with a listing? Report it</span>
+          <span className="sr-only"> (opens in a new tab)</span>
+        </a>
         <div className="header-actions">
           <span className="last-updated">Last updated <strong>{formatLongDate(updated)}</strong></span>
           <a className="header-report" href={reportUrlFor()} title="Report a problem with a listing" target="_blank" rel="noopener noreferrer" onClick={() => countReportClick('header')} data-testid="link-header-report">
